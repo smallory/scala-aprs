@@ -1,2 +1,2 @@
 # scala-aprs
-A library for procesing the aprs-is or firenet feed on spark, in order to forefcast local Hazard conditions and send warnings.
+A library for processing the aprs-is or firenet feed on spark, in order to forecast local Hazard conditions and send warnings.
