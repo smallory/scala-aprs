@@ -3,7 +3,9 @@
   */
 package net.hcoop.smallory
 
-package object freezewarn {
+package object freezewarn{
+  type ObservationMap = scala.collection.mutable.Map[String, Float]
+  
   def base91decode(str: String): Long = {
     var l: Long = 0
     for (c <- str) {

@@ -7,8 +7,6 @@
 
 package net.hcoop.smallory.freezewarn
 
-import scala.collection.mutable.{Map, HashMap}
-
 class AprsisPacket {
   import net.hcoop.smallory.freezewarn.{AprsisPacket => our}
   var comment: Boolean = false

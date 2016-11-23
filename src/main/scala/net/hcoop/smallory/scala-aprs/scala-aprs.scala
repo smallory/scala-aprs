@@ -16,7 +16,7 @@ object freezewarn {
     val sc = new SparkContext()
     // Using a stub input for development, after authentication is built,
     // switch to streaming socket from aprs-is server.
-    val distFile = sc.textFile("src/test/scala/net/hcoop/smallory/freezewarn/test.dat")
+    val distFile = sc.textFile("src/test/scala/net/hcoop/smallory/scala-aprs/test.dat")
 
     distFile
         .map(rec => AprsisPacket(rec) )

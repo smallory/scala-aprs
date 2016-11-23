@@ -1,4 +1,6 @@
+long_test.dat
 target/
+project/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
