@@ -10,7 +10,6 @@ class packageObjectTest extends FlatSpec with Matchers {
   }
 
   it should "create base-91 excoded Strings from Longs" in {
-      assert( base91encode(12345678) == "1Cmi")
       assert( base91encode(32) == "A")
   }
 
@@ -19,6 +18,5 @@ class packageObjectTest extends FlatSpec with Matchers {
 class packageObjectStringTests extends FunSuite {
   test("create base-91 encoded Strings from Longs") {
       assert( base91encode(12345678) == "1Cmi")
-      assert( base91encode(32) == "A")
   }
 }

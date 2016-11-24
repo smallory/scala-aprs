@@ -7,6 +7,8 @@
 
 package net.hcoop.smallory.freezewarn
 
+//import java.time.Datetime
+
 class AprsisPacket {
   import net.hcoop.smallory.freezewarn.{AprsisPacket => our}
   var comment: Boolean = false
@@ -22,6 +24,10 @@ class AprsisPacket {
  // var location: Tuple2<Int, Int>
  // var time:
 
+  // def asRecord(): Tuple4(Float, Float, Datetime, Float) = {
+  //   val (fLat, fLon) = position.getFloat
+  //   (fLat, fLon, time, temp)
+  // }
   def readPacket(msg: String) {
     comment = our.commentP(msg)
     if (msg.length < 3) return

@@ -70,7 +70,6 @@ class aprsWeatherTest extends FunSpec {
         assert(wx.get("c").get === 350)
         assert(wx.get("s").get === 15)
       }
-      ignore("should find standard and extended data in 'H'azard objects") {}
       it("should expand the radiation exponent correctly") {
         /*
          From the APRS spec:
@@ -107,10 +106,8 @@ class aprsWeatherTest extends FunSpec {
         assert(wx.get("s").isDefined)
         assert(wx.get("c").isDefined)
         assert(wx.get("h").get === 99)
-        /* this other way didn't work right: */
-        // assert(wx.get("F").get === (0.03 +- 0.0001))
-        // *** FAILED ***
-        // -0.03 did not equal -0.03 +- 1.0E-4 (aprsWeatherTests.scala:110)
+        // Finally got this working: type specification is neccessary
+        assert(wx.get("F").get === (-0.03f +- 0.0001f))
         assert(wx.get("F").get + 0.03 < 0.0001)
         assert(wx.get("F").get + 0.03 > -0.0001)
         assert(wx.get("c").get === 150)

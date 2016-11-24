@@ -10,7 +10,38 @@ class aprsPositionTest extends FunSpec {
         assert(AprsPosition.expandLon("") === 0)
       }
       it("should pass example in spec") {
-        assert(AprsPosition.expandLon("<*e7") === (-72.75 +- .0001))
+        assert(AprsPosition.expandLon("<*e7") === (-72.75f +- .001f))
+      }
+    }
+    describe("expandLat") {
+      it("should return 0 for empty strings") {
+        assert(AprsPosition.expandLat("") === 0)
+      }
+      it("should pass example in spec") {
+        // 49 30'
+        assert(AprsPosition.expandLat("5L!!") === (49.5f +- .0001f))
+      }
+    }
+    describe("AprsPosition.dddmmmmmToFloat") {
+      it("should return positive for North and East positions") {
+        assert(AprsPosition.dddmmmmmToFloat("4500.00N") === (45f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("9000.00N") === (90f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("0000.00N") === (0f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("04500.00E") === (45f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("16000.00E") === (160f +- 0.00001f))
+      }
+      it("should return positive for South and West positions") {
+        assert(AprsPosition.dddmmmmmToFloat("4500.00S") === (-45f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("9000.00S") === (-90f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("0000.00S") === (0f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("04500.00W") === (-45f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToFloat("16000.00W") === (-160f +- 0.00001f))
+      }
+      it("should return zero for unknown positions") {
+        assert(AprsPosition.dddmmmmmToFloat("99999.99S") === 0)
+        assert(AprsPosition.dddmmmmmToFloat("N") === 0)
+        assert(AprsPosition.dddmmmmmToFloat("W") === 0)
+        assert(AprsPosition.dddmmmmmToFloat("") === 0)
       }
     }
   }
@@ -18,8 +49,8 @@ class aprsPositionTest extends FunSpec {
   describe("aprsPosition") {
     it("should have 0N 0W when no position reported") {
       val a = AprsPosition("K6DHN-9>APT314,W0UPS-5,WIDE1*,WIDE2-1,qAR,W0ARP:>TT3, K6DHN@COMCAST.NET")
-      assert(a.lats === "0000.00N")
-      assert(a.lons === "0000.00W")
+      assert(a.lats ===  "0000.00N")
+      assert(a.lons === "00000.00W")
     }
     // N0LNE>APRS,TCPIP*,qAC,FIFTH:@221420z3935.04N/10510.26W_028/008g013t036r000p003P003b10110h78.WD 233
     // K0LAI-9>SY4PTR,WIDE1-1,WIDE2-1,qAR,W0ARP:`qal v/]"GV}449.350MHzÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ=
