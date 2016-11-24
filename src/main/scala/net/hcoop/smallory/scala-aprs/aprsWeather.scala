@@ -19,6 +19,10 @@ class aprsWeather {
     if (wx.contains(key)) return Some(wx(key))
       else return None
   }
+  def getObs(key: String): Option[Measure] = {
+    if (wx.contains(key)) return Some((key, wx(key), our.weatherFields(key)._2 ))
+      else return None
+  }
 }
 object aprsWeather {
   // Patterns compiled during construction, so no extra compile step

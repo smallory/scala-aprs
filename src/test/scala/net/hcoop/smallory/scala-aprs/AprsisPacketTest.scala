@@ -3,6 +3,11 @@ package net.hcoop.smallory.freezewarn
 import org.scalatest.{FunSpec}
 
 class aprsPacketTest extends FunSpec {
+    def seedTime() {
+      // Set the time the AprsisPacket class object
+      AprsisPacket("# javAPRSSrvr 4.1.0b05 22 Nov 2016 14:23:39 GMT WE7U-F2 14580")
+      return
+    }
   describe("the aprsPackets") {
     describe("when being created") {
       it("should identify but not load comments") {
@@ -38,6 +43,36 @@ class aprsPacketTest extends FunSpec {
         assert(ht.weather.get("g").get === 8)
         assert(ht.weather.get("t").get === 26)
         assert(!ht.weather.get("h").isDefined)
+      }
+      it("should provide flat records useful for loading to SparkSQL") {
+        seedTime()
+        val ap = AprsisPacket("WD4IXD>APRS,TCPIP*,qAC,T2USANW:@221520z3930.75N/10500.95W_308/003g007t033r002p010P010b10158h92L026.WD 31")
+        // first check that the expected things are there
+        assert(ap != null)
+        assert(ap.source != null)
+        assert(ap.destination != null)
+        assert(ap.payload != null)
+        assert(ap.date != null)
+        assert(ap.position != null)
+        assert(ap.weather != null)
+        // check that intermediate values are correctly poopulated
+        assert(ap.comment === false)
+        assert(ap.payload === "221520z3930.75N/10500.95W_308/003g007t033r002p010P010b10158h92L026.WD 31")
+        assert(ap.position.lats === "3930.75N")
+        assert(ap.position.lons === "10500.95W")
+        assert(ap.position.table === "/")
+        assert(ap.position.symbol === "_")
+        assert(ap.date.theDate === "2016 Nov 22, 15:20")
+        // do we have the data of interest?
+        assert(ap.weather.wx.size === 10)
+        // Do the things!
+        val flat = ap.getWxObservations()
+        assert(flat != null)
+        assert(flat != None)
+        assert(flat.size === 10)
+        
+      }
+      ignore("should provide field names for flattened SQL-ready output") {
       }
     }
   }

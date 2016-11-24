@@ -7,6 +7,7 @@
 
 package net.hcoop.smallory.freezewarn
 
+import scala.collection.mutable.ArrayBuffer
 //import java.time.Datetime
 
 class AprsisPacket {
@@ -56,6 +57,20 @@ class AprsisPacket {
       case "H" => weather = aprsWeather(message)
       case _ => {}
     }
+  }
+
+  def getWxObservations() = {
+    val (lat, lon) = position.position()
+    val time = date.theDate
+    var ret: ArrayBuffer[(Float, Float, String, String, Float, String)] = ArrayBuffer()
+    for (oType <- "t") {
+      val oval = weather.getObs(oType.toString)
+      if (oval != None) {
+        val oo = oval.get
+        ret += Tuple6(lat, lon, time, oo._1, oo._2, oo._3)
+      }
+    }
+    ret
   }
 
   def fmt(): String = {

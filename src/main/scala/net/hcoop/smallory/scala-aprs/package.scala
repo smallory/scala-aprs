@@ -5,6 +5,8 @@ package net.hcoop.smallory
 
 package object freezewarn{
   type ObservationMap = scala.collection.mutable.Map[String, Float]
+  // Measure = (type, value, unit)
+  type Measure = Tuple3[String, Float, String]
   
   def base91decode(str: String): Long = {
     var l: Long = 0
