@@ -52,7 +52,17 @@ class aprsPositionTest extends FunSpec {
       assert(a.lats ===  "0000.00N")
       assert(a.lons === "00000.00W")
     }
-    // N0LNE>APRS,TCPIP*,qAC,FIFTH:@221420z3935.04N/10510.26W_028/008g013t036r000p003P003b10110h78.WD 233
+    it("should parse the position and Id the right icon when present with weather") {
+      val a = AprsPosition("N0LNE>APRS,TCPIP*,qAC,FIFTH:@221420z3935.04N/10510.26W_028/008g013t036r000p003P003b10110h78.WD 233")
+      assert(a.lats === "3935.04N")
+      assert(a.lons === "10510.26W")
+      assert(a.symbol === "_")
+      assert(a.table === "/")
+      val p = a.position()
+      assert(p._1 === (39.584f +- 0.00001f))
+      assert(p._2 === (-105.171f +- 0.00001f))
+    }
+    
     // K0LAI-9>SY4PTR,WIDE1-1,WIDE2-1,qAR,W0ARP:`qal v/]"GV}449.350MHzÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ=
     // KD7MRJ-7>SYSSSR,WIDE1-1,WIDE2-1,qAo,AC0VP-10:`pRnmf/k/`"G\}_%
     // K0XK>APDR13,TCPIP*,qAC,T2SWEDEN:=3936.47NZ10448.47W@313/000/A=005620 http://aprsdroid.org/

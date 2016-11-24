@@ -46,7 +46,7 @@ class AprsPosition {
     table = ta
     symbol = sm
     lats = la
-    lons = la
+    lons = lo
   }
 
   def parsePosition(payload: String) = {
