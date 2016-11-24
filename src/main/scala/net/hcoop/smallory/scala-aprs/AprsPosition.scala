@@ -66,8 +66,20 @@ class AprsPosition {
       lonf = our.expandLon(m.group(3))
       val la = our.stringLat(latf)
       val lo = our.stringLon(lonf)
-      setPos(la, lo, m.group(1), m.group(4))
-      // TODO: numbers are still letters in table identifier
+      val ta = m.group("table") match {
+        case "a" => "0"
+        case "b" => "1"
+        case "c" => "2"
+        case "d" => "3"
+        case "e" => "4"
+        case "f" => "5"
+        case "g" => "6"
+        case "h" => "7"
+        case "i" => "8"
+        case "j" => "9"
+        case x => x
+      }
+      setPos(la, lo, ta, m.group("symbol"))
       timePosLength = m.end
     }
   }
@@ -80,16 +92,16 @@ class AprsPosition {
 }
 object AprsPosition {
   val latLonRegex = new Regex( // spec. pages 32 to 35
-    """(\d{4}\.\d\d[NS])([\\\/0-9A-Z])(\d{5}\.\d\d[EW])(.)""",
-    "lat", "table", "lon", "symbol")
+    """^((?:\d{6}[zh])|)(\d{4}\.\d\d[NS])([\\\/0-9A-Z])(\d{5}\.\d\d[EW])(.)""",
+    "date", "lat", "table", "lon", "symbol")
   val compressedLatLonRegex = new Regex( // spec pp. 33-41
-    """([\\\/A-Za-j])(\d{4})(\d{4})(.)(..)T""",
-    "table", "zlat", "zlon", "symbol", "courseSpeed")
-  val parseDegMin = new Regex("""(1?\d{2})(\d{2}\.[0-6]\d)([NSEWnsew])""", "deg", "min", "hemi")
+    """^((?:\d{6}[zh])|)([\\\/A-Za-j])([?-{]{4})([?-{]{4})(.)([?-{][?-{])T""",
+    "date", "table", "zlat", "zlon", "symbol", "courseSpeed")
+  val parseDegMin = new Regex("""(1?\d{2})([0-6]\d\.\d{2})([NSEWnsew])""", "deg", "min", "hemi")
 
   def dddmmmmmToFloat(degs: String): Float = {
     val dmm = parseDegMin findFirstMatchIn degs
-    if (dmm == None) {return 0f}
+    if (dmm == None) return 0f
     val m = dmm.get
     val sign = m.group("hemi") match {
       case "N" | "E" | "n" | "e" => 1

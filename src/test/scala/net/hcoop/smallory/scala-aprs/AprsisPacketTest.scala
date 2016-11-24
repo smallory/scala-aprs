@@ -26,6 +26,10 @@ class aprsPacketTest extends FunSpec {
       }
       it("should load weather data when present in 'H'azard objects") {
         val ht = AprsisPacket("N0LNE>APRS,TCPIP*,qAC,EIGHTH:@181545z3935.04N/10510.26WH150/005g008t026h  X123")
+        assert(ht != null)
+        assert(ht.comment === false)
+        assert(ht.payload === "181545z3935.04N/10510.26WH150/005g008t026h  X123")
+        assert(ht.weather != null)
         assert(ht.weather.wx.size === 5)
         assert(ht.weather.get("X").isDefined)
         assert(ht.weather.get("X").get === 12000)
