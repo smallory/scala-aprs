@@ -70,7 +70,6 @@ class aprsPacketTest extends FunSpec {
         assert(flat != null)
         assert(flat != None)
         assert(flat.size === 10)
-        
       }
       ignore("should provide field names for flattened SQL-ready output") {
       }

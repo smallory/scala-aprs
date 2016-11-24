@@ -59,18 +59,19 @@ class AprsisPacket {
     }
   }
 
-  def getWxObservations() = {
+  def getWxObservations():
+      ArrayBuffer[(Float, Float, String, String, Float, String)] = {
     val (lat, lon) = position.position()
     val time = date.theDate
     var ret: ArrayBuffer[(Float, Float, String, String, Float, String)] = ArrayBuffer()
-    for (oType <- "t") {
+    for (oType <- "thscgrpPbL") {
       val oval = weather.getObs(oType.toString)
       if (oval != None) {
         val oo = oval.get
         ret += Tuple6(lat, lon, time, oo._1, oo._2, oo._3)
       }
     }
-    ret
+    return ret
   }
 
   def fmt(): String = {

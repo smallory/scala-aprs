@@ -19,12 +19,12 @@ object freezewarn {
     val distFile = sc.textFile("src/test/scala/net/hcoop/smallory/scala-aprs/test.dat")
 
     distFile
-        .map(rec => AprsisPacket(rec) )
-        .filter(rec => !rec.comment)
-        .filter(pkt => pkt.position.symbol =="_")
-        .map(pkt => pkt.fmt() )
-        .take(100)
-        .map(println)
+      .map(rec => AprsisPacket(rec) )
+      .filter(rec => !rec.comment)
+      .filter(pkt => pkt.position.symbol == "_")
+      .flatMap(r => r.getWxObservations())
+      .take(100)
+      .map(println)
 
   }
 }
