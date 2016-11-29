@@ -5,18 +5,21 @@
  * 
  */
 
-package net.hcoop.smallory.freezewarn
+package net.hcoop.smallory.scalaprs
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 //import org.apache.spark.streaming._
 
-object freezewarn {
+object scala-aprs {
   def main(args: Array[String]) {
     val sc = new SparkContext()
+    val inFile = ( if (args.size > 0)
+      args(0)
+    else "src/test/scala/net/hcoop/smallory/scala-aprs/test.dat" )
     // Using a stub input for development, after authentication is built,
     // switch to streaming socket from aprs-is server.
-    val distFile = sc.textFile("src/test/scala/net/hcoop/smallory/scala-aprs/test.dat")
+    val distFile = sc.textFile(inFile)
 
     distFile
       .map(rec => AprsisPacket(rec) )

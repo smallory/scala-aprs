@@ -2,7 +2,7 @@
   Class for operations on the positions of APRS packets
   */
 
-package net.hcoop.smallory.freezewarn
+package net.hcoop.smallory.scalaprs
 
 import scala.util.matching.Regex
 
@@ -26,7 +26,7 @@ import scala.util.matching.Regex
   *
   */
 class AprsPosition {
-  import net.hcoop.smallory.freezewarn.{AprsPosition => our}
+  import net.hcoop.smallory.scalaprs.{AprsPosition => our}
   var lats: String = "0000.00N"
   var lons: String = "00000.00W"
   var error: Int = 6

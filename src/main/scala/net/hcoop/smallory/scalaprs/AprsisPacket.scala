@@ -5,13 +5,13 @@
  * 
  */
 
-package net.hcoop.smallory.freezewarn
+package net.hcoop.smallory.scalaprs
 
 import scala.collection.mutable.ArrayBuffer
 //import java.time.Datetime
 
 class AprsisPacket {
-  import net.hcoop.smallory.freezewarn.{AprsisPacket => our}
+  import net.hcoop.smallory.scalaprs.{AprsisPacket => our}
   var comment: Boolean = false
   var source: String = null
   var destination: String = null
@@ -21,7 +21,7 @@ class AprsisPacket {
   var date: AprsDate = null
   var position: AprsPosition = null
   var message: String = null
-  var weather: aprsWeather = null
+  var weather: AprsWeather = null
  // var location: Tuple2<Int, Int>
  // var time:
 
@@ -50,11 +50,11 @@ class AprsisPacket {
     message = payload drop position.timePosLength
     position.symbol match {
       // Standard weather site
-      case "_" => weather = aprsWeather(message)
+      case "_" => weather = AprsWeather(message)
       // NWS weather site
-      case "W" => weather = aprsWeather(message)
+      case "W" => weather = AprsWeather(message)
       // Hazards may have weather
-      case "H" => weather = aprsWeather(message)
+      case "H" => weather = AprsWeather(message)
       case _ => {}
     }
   }

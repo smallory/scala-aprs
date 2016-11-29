@@ -1,4 +1,4 @@
-package net.hcoop.smallory.freezewarn
+package net.hcoop.smallory.scalaprs
 
 import org.scalatest.{FunSpec}
 

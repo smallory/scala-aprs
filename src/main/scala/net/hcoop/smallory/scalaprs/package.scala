@@ -3,7 +3,7 @@
   */
 package net.hcoop.smallory
 
-package object freezewarn{
+package object scalaprs{
   type ObservationMap = scala.collection.mutable.Map[String, Float]
   // Measure = (type, value, unit)
   type Measure = Tuple3[String, Float, String]

@@ -2,13 +2,13 @@
   Class for operations on the weather infomation in APRS packets
   */
 
-package net.hcoop.smallory.freezewarn
+package net.hcoop.smallory.scalaprs
 
 import scala.util.matching.Regex
 import scala.collection.mutable.{Map, HashMap}
 
-class aprsWeather {
-  import net.hcoop.smallory.freezewarn.{aprsWeather => our}
+class AprsWeather {
+  import net.hcoop.smallory.scalaprs.{AprsWeather => our}
   // This name will be used to access weather observation fields in
   // many places. Central to project, gets a nice short name.
   var wx: ObservationMap = null
@@ -24,7 +24,7 @@ class aprsWeather {
       else return None
   }
 }
-object aprsWeather {
+object AprsWeather {
   // Patterns compiled during construction, so no extra compile step
   val wxRegex = new Regex(
     """^([0-9.]{3}|   )/([0-9.]{3}|   )g([0-9.\-]{3}|   )t([0-9.\-]{3}|   )([a-zA-Z0-9\-\. ]*)""",
@@ -41,7 +41,7 @@ object aprsWeather {
   val missingValueRegex = """^(( *)||(\.)*)$""".r
 
   def apply(message: String) = {
-    val w = new aprsWeather()
+    val w = new AprsWeather()
     w.wx = parseWeather(message)
     w
   }

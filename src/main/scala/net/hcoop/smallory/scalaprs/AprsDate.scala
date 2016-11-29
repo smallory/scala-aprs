@@ -5,10 +5,10 @@
 
   */
 
-package net.hcoop.smallory.freezewarn
+package net.hcoop.smallory.scalaprs
 
 class AprsDate {
-  import net.hcoop.smallory.freezewarn.{AprsDate => our}
+  import net.hcoop.smallory.scalaprs.{AprsDate => our}
   var theDate: String = null
 
   override def toString(): String = {

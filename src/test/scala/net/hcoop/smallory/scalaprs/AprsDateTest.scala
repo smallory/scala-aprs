@@ -1,4 +1,4 @@
-package net.hcoop.smallory.freezewarn
+package net.hcoop.smallory.scalaprs
 
 import org.scalatest.{FunSpec}
 import org.scalatest.Matchers._
@@ -10,7 +10,9 @@ class AprsDateTest extends FunSpec {
       AprsisPacket("# javAPRSSrvr 4.1.0b05 22 Nov 2016 14:23:39 GMT WE7U-F2 14580")
       return
     }
-    it("should be based on AprsisPacket stread date when absent") {
+    it("should be based on AprsisPacket stream date-time when absent") {
+      // TODO: This is somehow no-deterministic in testing.
+      // Find why seedTime() does not *always* update Aprsispacket object.
       seedTime()
       // K6DHN-9>APT314,W0UPS-5,WIDE1*,WIDE2-1,qAR,W0ARP:>TT3, K6DHN@COMCAST.NET
       val a = AprsDate("TT3, K6DHN@COMCAST.NET")
