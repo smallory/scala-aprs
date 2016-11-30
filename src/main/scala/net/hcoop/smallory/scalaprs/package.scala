@@ -2,11 +2,14 @@
   Package utilities
   */
 package net.hcoop.smallory
+import java.time.{ZoneOffset, ZoneId}
 
 package object scalaprs{
   type ObservationMap = scala.collection.mutable.Map[String, Float]
   // Measure = (type, value, unit)
   type Measure = Tuple3[String, Float, String]
+
+  val utc = ZoneOffset.UTC
   
   def base91decode(str: String): Long = {
     var l: Long = 0

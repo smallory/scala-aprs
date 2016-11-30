@@ -11,7 +11,7 @@ import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
 //import org.apache.spark.streaming._
 
-object scala-aprs {
+object scalaprs {
   def main(args: Array[String]) {
     val sc = new SparkContext()
     val inFile = ( if (args.size > 0)
