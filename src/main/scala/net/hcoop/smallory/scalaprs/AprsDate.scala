@@ -50,7 +50,6 @@ object AprsDate {
       case None => {
         fixedTimeRegex findFirstIn payload match {
           case Some(tt) => {
-            println(payload)
             val fixedTimeRegex(d, h, m, s) = tt
             return s"$year $month $day $h:$m"
           }

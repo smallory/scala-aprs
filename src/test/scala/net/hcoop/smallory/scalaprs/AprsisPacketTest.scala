@@ -38,6 +38,16 @@ class aprsPacketTest extends FunSpec {
         assert(AprsisPacket.minute == "19")
         assert(b.comment == true)
       }
+      it("should use time in more recently read server comment as date stream time") {
+        val a = AprsisPacket("# javAPRSSrvr 4.1.0b05 21 Nov 2016 03:18:32 GMT WE7U-F2 14580") 
+        val b = AprsisPacket("# aprsc 2.0.20-g6a459af 18 Nov 2016 17:19:49 GMT T2USANE 107.170.42.65:14580")
+        assert(AprsisPacket.year == "2016")
+        assert(AprsisPacket.month == "Nov")
+        assert(AprsisPacket.day == "18")
+        assert(AprsisPacket.hour == "17")
+        assert(AprsisPacket.minute == "19")
+        assert(b.comment == true)
+      }
       it("should load weather data when present in 'H'azard objects") {
         val ht = AprsisPacket("N0LNE>APRS,TCPIP*,qAC,EIGHTH:@181545z3935.04N/10510.26WH150/005g008t026h  X123")
         assert(ht != null)

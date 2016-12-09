@@ -8,6 +8,7 @@
 package net.hcoop.smallory.scalaprs
 
 import scala.collection.mutable.ArrayBuffer
+import scala.Exception
 //import java.time.Datetime
 
 class AprsisPacket {
@@ -61,14 +62,22 @@ class AprsisPacket {
 
   def getWxObservations():
       ArrayBuffer[(Float, Float, String, String, Float, String)] = {
-    val (lat, lon) = position.position()
-    val time = date.theDate
     var ret: ArrayBuffer[(Float, Float, String, String, Float, String)] = ArrayBuffer()
-    for (oType <- "thscgrpPbL") {
-      val oval = weather.getObs(oType.toString)
-      if (oval != None) {
-        val oo = oval.get
-        ret += Tuple6(lat, lon, time, oo._1, oo._2, oo._3)
+    try {
+      val (lat, lon) = position.position()
+      //      if (("null".r findFirstIn date.theDate) != None) logDebug( payload)
+      val time = date.asDate.toString
+      for (oType <- "thscgrpPbL") {
+        val oval = weather.getObs(oType.toString)
+        if (oval != None) {
+          val oo = oval.get
+          ret += Tuple6(lat, lon, time, oo._1, oo._2, oo._3)
+        }
+      }
+    } catch {
+      case e: Exception => {
+        logDebug(e.toString + ", " + payload)
+        ret.clear
       }
     }
     return ret
@@ -106,7 +115,7 @@ object AprsisPacket {
 
   // # javAPRSSrvr 4.1.0b05 21 Nov 2016 03:18:32 GMT WE7U-F2 14580
   val serverRegex =
-    """# javAPRSSrvr [.0-9a-z]* (\d\d) ([A-Za-z]+) (\d\d\d\d) (\d\d):(\d\d):\d\d GMT [-A-Z0-9]+ \d+""".r
+    """# [a-zA-Z]+ [.0-9a-z-]* (\d\d) ([A-Za-z]+) (\d\d\d\d) (\d\d):(\d\d):\d\d GMT [-A-Z0-9]+ \d+""".r
   def commentP(record: String): Boolean = {
     if (record.length < 1) return true
     serverRegex findFirstIn record match {

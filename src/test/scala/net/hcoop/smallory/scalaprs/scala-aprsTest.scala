@@ -39,13 +39,34 @@ class packageObjectFunSuiteTests extends FunSuite {
   This seems intuitive for a structured system-subsystem-component approach,
   will use more elsewhere.
   */
-class packageObjectFunSpecTests extends FunSpec with Matchers {
+class FunSpecTests extends FunSpec with Matchers {
   describe("in scala-aprs package object") {
     describe("the base91decode function"){
       it("should return correct Longs from base-91") {
         base91decode("?") should be (30)
         base91decode("S]") should be (4610)
         base91decode("<*e7") should be (20427156)
+      }
+    }
+  }
+  describe("In scala-aprs.scala") {
+    describe("readArrayFromFile") {
+      it("should return a map representing 'key=value' lines in a file") {
+        val ll = List(
+          "a=b",
+          "",
+          "Four score and twenty years",
+          "c=Kathmandu",
+          ""
+        )
+        val m = scalaprs.readMapFromStrings(ll)
+        assert(m.getClass.getName === "scala.collection.mutable.HashMap")
+        assert(m.size === 2)
+        assert(m.contains("a") === true)
+        assert(m.contains("b") === false)
+        assert(m.contains("c") === true)
+        assert(m("a") === "b")
+        assert(m("c") === "Kathmandu")
       }
     }
   }
