@@ -12,16 +12,16 @@ class AprsWeather {
   // This name will be used to access weather observation fields in
   // many places. Central to project, gets a nice short name.
   var wx: ObservationMap = null
-  override def toString(): String = {
-    return s""
-  }
+
   def get(key: String): Option[Float] = {
     if (wx.contains(key)) return Some(wx(key))
       else return None
   }
-  def getObs(key: String): Option[Measure] = {
-    if (wx.contains(key)) return Some((key, wx(key), our.weatherFields(key)._2 ))
-      else return None
+  def getObs(key: String): Option[WxObservation] = {
+    if (wx.contains(key)) {
+      return Some(WxObservation(
+        Float.NaN, Float.NaN, null, key, wx(key), our.weatherFields(key)._2 ))
+    } else return None
   }
 }
 object AprsWeather {

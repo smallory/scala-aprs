@@ -60,18 +60,20 @@ class AprsisPacket {
     }
   }
 
-  def getWxObservations():
-      ArrayBuffer[(Float, Float, String, String, Float, String)] = {
-    var ret: ArrayBuffer[(Float, Float, String, String, Float, String)] = ArrayBuffer()
+  def getWxObservations(): ArrayBuffer[WxObservation] = {
+      //ArrayBuffer[(Float, Float, String, String, Float, String)] = {
+      // var ret: ArrayBuffer[(Float, Float, String, String, Float, String)] = ArrayBuffer()
+    var ret: ArrayBuffer[WxObservation] = ArrayBuffer()
     try {
       val (lat, lon) = position.position()
-      //      if (("null".r findFirstIn date.theDate) != None) logDebug( payload)
-      val time = date.asDate.toString
+      // if (("null".r findFirstIn date.theDate) != None) logDebug( payload)
+      val time = date.asDate
       for (oType <- "thscgrpPbL") {
         val oval = weather.getObs(oType.toString)
         if (oval != None) {
           val oo = oval.get
-          ret += Tuple6(lat, lon, time, oo._1, oo._2, oo._3)
+          ret += WxObservation(
+            lat, lon, time, oo.feature, oo.value, oo.unit)
         }
       }
     } catch {

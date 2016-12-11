@@ -5,11 +5,10 @@ package net.hcoop.smallory
 import java.time.{ZoneOffset, ZoneId, ZonedDateTime}
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle.{FULL, LONG, MEDIUM, SHORT}
+import scala.collection.mutable.Map
 
 package object scalaprs{
   type ObservationMap = scala.collection.mutable.Map[String, Float]
-  // Measure = (type, value, unit)
-  type Measure = Tuple3[String, Float, String]
 
   val utc = ZoneOffset.UTC
 
@@ -48,5 +47,14 @@ package object scalaprs{
     return s
   }
 
+  def mapFromStrings(arFile: Iterable[String]): Map[String, String] = {
+    var rtrn: Map[String, String] = Map()
+    rtrn ++= arFile map { (entry: String) =>
+      val field = entry.split("=")
+      if (field.size > 1) Some(field(0) -> field(1))
+      else None
+    } collect ({case Some((x:String, y:String)) => (x -> y)})
+    return rtrn
+  }
 }
 

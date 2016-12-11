@@ -59,7 +59,7 @@ class FunSpecTests extends FunSpec with Matchers {
           "c=Kathmandu",
           ""
         )
-        val m = scalaprs.readMapFromStrings(ll)
+        val m = mapFromStrings(ll)
         assert(m.getClass.getName === "scala.collection.mutable.HashMap")
         assert(m.size === 2)
         assert(m.contains("a") === true)
