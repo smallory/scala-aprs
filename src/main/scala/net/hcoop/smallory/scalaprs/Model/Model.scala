@@ -1,30 +1,34 @@
 package net.hcoop.smallory.scalaprs.models
 
-import net.hcoop.smallory.scalaprs.utc
+import net.hcoop.smallory.scalaprs._
 
-import java.time.{ZonedDateTime, Duration}
+import java.time.{ZonedDateTime, Duration, Instant}
 
 abstract class Model {
   import net.hcoop.smallory.scalaprs.models.{Model => our}
+  val validUnits: List[String]
   var _unit: String = ""
   var lat: Float = 0f
   var lon: Float = 0f
-  var buildTime: ZonedDateTime = null
-  var earliestData: ZonedDateTime = null
+  var buildTime: Long = Long.MaxValue
+  var earliestData: Long = Long.MinValue
   var lookback: Duration = Duration.ofDays(1)
   var radius: Float = 15f // nautical miles
 
+  def addObservation(obs: WxObservation): Unit
+
   def unit: String = return _unit
   def unit_= (value: String):Unit = {
-    if (our.validUnits contains value) _unit = value
+    if (validUnits contains value) _unit = value
+    else logCodeError("Unit "+value+" appears to be invalid in this context")
   }
 
   /** Test to see if a data record is in the time window this model uses.
     * Filtering main stream, so keep it fast.
     */
-  def timeFilter(date: ZonedDateTime): Boolean = {
-    if (buildTime.isBefore(date)) false
-    else if (earliestData.isAfter(date)) false
+  def timeFilter(date: Long): Boolean = {
+    if (buildTime < date) false
+    else if (earliestData > date) false
     else true
   }
   /** Test to see if a data record is in the region this model uses.
@@ -35,7 +39,10 @@ abstract class Model {
   }
 
   // apply gives instances of the class a '(' access method.
-  def apply(when: ZonedDateTime): Float
+  def apply(when: ZonedDateTime): Float =
+    apply(when.toInstant.getEpochSecond())
+  def apply(): Float = apply(buildTime)
+  def apply(when: Long): Float
   def min(): Float
   def max(): Float
   def maxTime(): ZonedDateTime
@@ -51,11 +58,14 @@ object Model {
     * Uses that fact that objects are passed by value. Not a function,
     * purely side-effects.
     */
+  def tweak(mm: Model, lat: Float, lon: Float, time: Long) {
+    tweak(mm, lat, lon, Instant.ofEpochSecond(time).atZone(utc))
+  }
   def tweak(mm: Model, lat: Float, lon: Float, time: ZonedDateTime) {
     mm.lat = lat
     mm.lon = lon
-    mm.buildTime = time
-    mm.earliestData = time.minus(mm.lookback)
+    mm.buildTime = time.toInstant.getEpochSecond()
+    mm.earliestData = time.minus(mm.lookback).toInstant.getEpochSecond()
   }
 
   /**
@@ -67,7 +77,7 @@ object Model {
   def apply(
     lat: Float, lon: Float,
     measure: String,
-    time: ZonedDateTime = ZonedDateTime.now(utc) // Override to build models at test times
+    time: Long = ZonedDateTime.now(utc).toInstant.getEpochSecond // Override to build models at test times
   ):Model = {
     val mm = measure match {
       case "t" | "temperature" => new LastTemperature()
@@ -77,4 +87,7 @@ object Model {
     tweak(mm, lat, lon, time)
     return mm
   }
+
+  def getZDT(seconds: Long): ZonedDateTime = Instant.ofEpochSecond(seconds).atZone(utc)
+
 }

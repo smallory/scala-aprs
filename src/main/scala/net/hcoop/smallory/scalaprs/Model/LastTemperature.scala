@@ -1,29 +1,53 @@
 package net.hcoop.smallory.scalaprs.models
-import java.time.ZonedDateTime
+import java.time.{ZonedDateTime, Instant}
+
+import net.hcoop.smallory.scalaprs._
 
 class LastTemperature extends Model {
   import net.hcoop.smallory.scalaprs.models.{LastTemperature => our}
+  val validUnits = our.validUnits
   _unit = "F"
   var lastObs: Float = Float.NaN
-  var minObs: Float = Float.MinValue
-  var maxObs: Float = Float.MaxValue
-  var timeLast: ZonedDateTime = null
+  var minObs: Float = Float.MaxValue
+  var minObsTime: Long = Long.MinValue
+  var maxObs: Float = Float.MinValue
+  var maxObsTime: Long = Long.MinValue
+  var timeLast: Long = Long.MinValue
 
-  def load() {
+  def addObservation(obs: WxObservation): Unit = {
+    if (obs.feature != "t") return ;
+    if (obs.time > timeLast) {
+      lastObs = obs.value
+      timeLast = obs.time
+    };
+    if (obs.value > maxObs) {
+      maxObs = obs.value
+      maxObsTime = obs.time
+    };
+    if (obs.value < minObs) {
+      minObs = obs.value
+      minObsTime = obs.time
+    };
+    return
   }
-  def apply(when: ZonedDateTime = timeLast): Float = {
+
+  def doUnits(raw: Float): Float = {
     // This needs to stay consistant with our.validUnits
     // but "case our.validUnits.head => lastTemp" not a stable identifier
     return _unit match {
-      case "F" => return lastObs // F default in APRS system
-      case "C" => 5 * (lastObs - 32.0f) / 9
-      // case "F" => 32.0f + 9 * (lastTemp / 5)
+      case "F" => return raw // F default in APRS system
+      case "C" => 5 * (raw - 32.0f) / 9
+        // case "F" => 32.0f + 9 * (lastTemp / 5)
     }
   }
-  def max(): Float = return maxObs
-  def maxTime(): ZonedDateTime = return timeLast
-  def min(): Float = return minObs
-  def minTime(): ZonedDateTime = return timeLast
+
+  def apply(when: Long): Float = doUnits(lastObs)
+  override def apply(): Float = doUnits(lastObs)
+  def max(): Float = doUnits(maxObs)
+  def maxTime(): ZonedDateTime = Model.getZDT(maxObsTime)
+  def min(): Float = doUnits(minObs)
+  def minTime(): ZonedDateTime = Model.getZDT(minObsTime)
+
 }
 
 object LastTemperature {

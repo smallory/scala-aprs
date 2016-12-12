@@ -21,6 +21,6 @@ case class WxObservation (
 import java.time.Instant
 val t: ZonedDateTime = Instant.ofEpochSecond(time).atZone(utc)
 
-val s: Long = (ZonedDateTime instance).get.toInstant.getEpochSecond()
+val s: Long = (ZonedDateTime instance).toInstant.getEpochSecond()
 
  */
