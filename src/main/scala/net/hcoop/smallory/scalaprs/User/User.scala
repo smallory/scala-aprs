@@ -1,8 +1,7 @@
 /**
-  Class for operations on the times of APRS packets
-
-  Depends on having the data-stream time available from AprsisPacket
-
+  Class representing a user at a location
+  Includes the list of alerts they wish to recieve, and from there
+  an array of models that provide the data that the alerts need.
   */
 
 package net.hcoop.smallory.scalaprs

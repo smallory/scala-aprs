@@ -1,5 +1,15 @@
 /**
-  Alerts define the conditions that lead to a message to a user being created
+  RadiationAlert is for ionizing radiation levels reported.
+
+  Defaults to warning at greater than 2000 nSv/hr.
+
+  One bananna generates about .1 uSieverts/hr, a Brazil nut .4 uS/hr.
+
+  From a post-Fukushima article in The Guardian:
+  Recommended limit for radiation workers every five years: 100.00 mSv
+            = 20 mSv/yr = 2283 nSv/Hr, this might be a good warning level.
+  Lowest annual dose at which any increase in cancer is clearly evident: 
+            100.00mSv/year =11415 nSv/Hr
   */
 
 package net.hcoop.smallory.scalaprs.alerts

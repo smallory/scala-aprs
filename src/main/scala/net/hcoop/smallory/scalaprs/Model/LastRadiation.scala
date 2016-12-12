@@ -1,4 +1,8 @@
 package net.hcoop.smallory.scalaprs.models
+/**
+  LastRadiation is a model that merely notes recent ionizing
+  radiation conditions that are reported.
+  */
 import java.time.ZonedDateTime
 import net.hcoop.smallory.scalaprs._
 

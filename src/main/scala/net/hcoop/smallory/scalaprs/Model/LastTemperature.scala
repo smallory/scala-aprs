@@ -1,4 +1,8 @@
 package net.hcoop.smallory.scalaprs.models
+/**
+  LastTemperature is a model that merely notes recent temperature
+  conditions that are reported.
+  */
 import java.time.{ZonedDateTime, Instant}
 
 import net.hcoop.smallory.scalaprs._

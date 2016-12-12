@@ -1,5 +1,6 @@
 /**
-  Alerts define the conditions that lead to a message to a user being created
+  GeneralAlerts is to create an alert based on untransformed
+  measurements present in the WxObservations data.
   */
 
 package net.hcoop.smallory.scalaprs.alerts

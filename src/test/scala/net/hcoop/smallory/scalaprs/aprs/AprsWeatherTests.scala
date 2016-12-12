@@ -77,14 +77,7 @@ class aprsWeatherTest extends FunSpec {
          code.  First, two digits of precision and the last digit is the order
          of magnitude in NANOSEVERTS/Hr.  So 123 is 12 * 10^3 nanosieverts/hr or
          12 microsieverts/hr. Or 456 is 45 * 10^6 nanosieverts/hr or 45 
-         millisieverts/hr.  One bananna generates about .1 uSieverts/hr, 
-         a Brazil nut .4 uS/hr.
-
-         From a post-Fukushima article in The Guardian:
-         Recommended limit for radiation workers every five years: 100.00 mSv
-            = 20 mSv/yr = 2283 nSv/Hr, this might be a good warning level.
-         Lowest annual dose at which any increase in cancer is clearly evident: 
-            100.00mSv/year =11415 nSv/Hr
+         millisieverts/hr.  One bananna generates about .1 uSieverts/hr.
          */
         val wx = AprsWeather("150/005g008t026h  X123")
         assert(wx.wx.size === 5)

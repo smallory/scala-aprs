@@ -1,5 +1,10 @@
 package net.hcoop.smallory.scalaprs.models
-
+/**
+  The root for classes taking recorded observations and
+  variously extending, interpolating, or transforming them
+  in ways that support alerts to conditions that are
+  current or expected in the near future.
+  */
 import net.hcoop.smallory.scalaprs._
 
 import java.time.{ZonedDateTime, Duration, Instant}
