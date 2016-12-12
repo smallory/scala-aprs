@@ -67,7 +67,7 @@ class AprsisPacket {
     try {
       val (lat, lon) = position.position()
       // if (("null".r findFirstIn date.theDate) != None) logDebug( payload)
-      val time = date.asDate
+      val time = date.toLong
       for (oType <- "thscgrpPbL") {
         val oval = weather.getObs(oType.toString)
         if (oval != None) {

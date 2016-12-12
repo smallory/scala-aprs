@@ -9,8 +9,10 @@ package net.hcoop.smallory.scalaprs
 
 import org.apache.spark.SparkConf
 import org.apache.spark.SparkContext
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SQLContext
+
 //import org.apache.spark.streaming._
 
 import scala.collection.mutable.{Map, ArrayBuffer}
@@ -18,6 +20,11 @@ import scala.collection.mutable.{Map, ArrayBuffer}
 object scalaprs {
   def main(args: Array[String]) {
     val spc = new SparkContext()
+    val sps = SparkSession
+      .builder()
+      .appName("scala-aprs")
+      .config(spc.getConf)
+      .getOrCreate()
     val sqc = new org.apache.spark.sql.SQLContext(spc)
 
     //-----------------------------------
@@ -31,27 +38,21 @@ object scalaprs {
       "src/test/scala/net/hcoop/smallory/scalaprs/test.dat")
     val dataStore = settings.getOrElse("dataStore",
       "dev.wx.store")
-    loadData(spc.textFile(inFile), dataStore, sqc)
+    loadData(spc.textFile(inFile), dataStore, sqc, sps)
     //-----------------------------------
 
     //-----------------------------------
     // Model / output operational loop
-    // Once out of once-and-done dev testing, should
-    // migrate to a streaming sink or similar.
+    // After the once-and-done dev testing phase is finished,
+    // should migrate to a streaming sink or similar.
     val userFile = settings.getOrElse("users", "users_test.dat")
     for (i <- List(1)) {
-      //-----------------------------------
       // Read the user file for contact info and alert definitions
-      var uu = findUsers(userFile)
-
-      //-----------------------------------
+      var uu = findUsers( spc.textFile(userFile) )
       // Get an active alert list
       var aa = updateAlerts(dataStore, uu)
-
-      //-----------------------------------
       // Do the active alert notification
       notifyUsers(aa)
-
     }
     // End model / output loop
     //-----------------------------------
@@ -75,9 +76,11 @@ object scalaprs {
 
     In operation, will take TCP stream and transform to data store updates.
     */
-  def loadData(source: RDD[String], store: String, sqc: SQLContext) = {
+  def loadData(source: RDD[String], store: String,
+    sqc: SQLContext, sps: SparkSession ) = {
     // Using a stub input for development, after authentication is built,
     // switch to streaming socket from aprs-is server.
+    // import sps.implicits._  // breaks toDF() ???
     import sqc.implicits._
     val df = source
       .map(rec => AprsisPacket(rec) )
@@ -96,23 +99,29 @@ object scalaprs {
   /**
     Read the user configuration file and prepare for processing
     */
-  def findUsers(userFile: String): ArrayBuffer[User] = {
+  def findUsers(userFile: RDD[String]): ArrayBuffer[User] = {
     val uu: ArrayBuffer[User] = ArrayBuffer()
+    // User() returns Option[User], flatMap unrolls this to RDD[User]
+    uu ++= userFile
+      .flatMap(userString => User(userString) )
+      .collect
+    logDebug("Counted "+uu.size+" valid user strings")
     uu
   }
 
   /**
     Run the models and test the alerts that were specified in the user file
     */
-  def updateAlerts(store: String, users: Iterable[User]): Array[Alert] = {
-    val aa: Array[Alert] = Array()
+  def updateAlerts(store: String, users: Iterable[User]): Array[alerts.Alert] = {
+    val aa: Array[alerts.Alert] = Array()
     aa
   }
 
   /**
     Send out requested notifications from alerts
     */
-  def notifyUsers(aa: Array[Alert]) = {
+  def notifyUsers(aa: Array[alerts.Alert]) = {
+    // stub
   }
 
 }

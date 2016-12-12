@@ -13,6 +13,15 @@ import java.time.format.{DateTimeFormatter, DateTimeParseException}
 class AprsDate {
   import net.hcoop.smallory.scalaprs.{AprsDate => our}
   var theDate: String = null
+  var zdt: Option[ZonedDateTime] = None
+
+  def toLong(): Long = {
+    if (zdt == None) {
+      val x = this.asDate()
+      if (x == null) return 0l
+    }
+    zdt.get.toInstant.getEpochSecond()
+  }
 
   override def toString(): String = {
     return theDate
@@ -20,10 +29,15 @@ class AprsDate {
 
   def asDate(): ZonedDateTime = {
     val fmt = DateTimeFormatter.ofPattern("yyyy MMM dd, kk:mm").withZone(utc)
-    try {
-      return ZonedDateTime.parse(theDate, fmt)
-    } catch {
-      case e: DateTimeParseException => return null
+    zdt match {
+      case z: Some[ZonedDateTime] => return z.get
+      case None =>
+        try {
+          zdt = Some(ZonedDateTime.parse(theDate, fmt))
+          return zdt.get
+        } catch {
+          case e: DateTimeParseException => return null
+        }
     }
     return null
   }

@@ -9,6 +9,8 @@ import scala.collection.mutable.Map
 
 package object scalaprs{
   type ObservationMap = scala.collection.mutable.Map[String, Float]
+  type Alert = net.hcoop.smallory.scalaprs.alerts.Alert
+  type Model = net.hcoop.smallory.scalaprs.models.Model
 
   val utc = ZoneOffset.UTC
 

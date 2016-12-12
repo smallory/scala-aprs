@@ -20,7 +20,7 @@ class AprsWeather {
   def getObs(key: String): Option[WxObservation] = {
     if (wx.contains(key)) {
       return Some(WxObservation(
-        Float.NaN, Float.NaN, null, key, wx(key), our.weatherFields(key)._2 ))
+        Float.NaN, Float.NaN, 0l, key, wx(key), our.weatherFields(key)._2 ))
     } else return None
   }
 }

@@ -63,7 +63,7 @@ class aprsPacketTest extends FunSpec {
         assert(ht.weather.get("t").get === 26)
         assert(!ht.weather.get("h").isDefined)
       }
-      it("should provide flat records useful for loading to SparkSQL") {
+      it("should provide flat records of one measurement each") {
         seedTime()
         val ap = AprsisPacket("WD4IXD>APRS,TCPIP*,qAC,T2USANW:@221520z3930.75N/10500.95W_308/003g007t033r002p010P010b10158h92L026.WD 31")
         // first check that the expected things are there
@@ -89,8 +89,6 @@ class aprsPacketTest extends FunSpec {
         assert(flat != null)
         assert(flat != None)
         assert(flat.size === 10)
-      }
-      ignore("should provide field names for flattened SQL-ready output") {
       }
     }
   }
