@@ -30,11 +30,13 @@ object GeneralAlert {
     setup.length match {
       case 2 => try {
         ta.limit = setup(1).toFloat
-      } catch {case e: Exception => {} }
+      } catch {case e: Exception => logDataError(
+        "Reading user file, got "+e.toString) }
       case 3 => try { 
         ta.comparison = setup(1)
         ta.limit = setup(2).toFloat
-      } catch {case e: Exception => {} }
+      } catch {case e: Exception => logDataError(
+        "Reading user file, got "+e.toString) }
       case _ => ;
     }
     ta.updateMessage
