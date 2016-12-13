@@ -61,7 +61,7 @@ class LastRadiation_test extends FunSpec with Matchers {
       assert(c.timeFilter(tDuring) === true)
       assert(c.timeFilter(tAfter) === false)
     }
-    ignore("should filter out far away obs") {
+    it("should filter out far away obs") {
       val tModel = ZonedDateTime.parse("2016-11-20T15:15:30Z")
               .toInstant.getEpochSecond();
       def lat = 45.0f
@@ -69,7 +69,7 @@ class LastRadiation_test extends FunSpec with Matchers {
       def latNear = 45.0001f
       def lonNear = -101.9999f
       def latFar = -45.0001f
-      def lonFar = -102.0001f
+      def lonFar = -82.0001f
       val c = Model(lat, lon, "X", tModel)
       assert(c.distFilter(latNear, lonNear) === true)
       assert(c.distFilter(latFar, lonFar) === false)

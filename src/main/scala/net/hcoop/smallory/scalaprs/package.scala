@@ -58,5 +58,67 @@ package object scalaprs{
     } collect ({case Some((x:String, y:String)) => (x -> y)})
     return rtrn
   }
+
+  /**
+    withinRadius returns whether or not two points are within
+    a particular radius of each other.
+
+    This implements the haversine funtion separately from 
+    haversineDistance() in order to allow various shortcut exits
+    to speed up filtering large sets of observations.
+    */
+  def withinRadius(
+    firstLat: Float, firstLon: Float,
+    secondLat: Float, secondLon: Float,
+    dist: Float, km: Boolean = false
+  ): Boolean = {
+    import scala.math.{min, cos, max, abs, toRadians, pow, sin, asin, sqrt}
+    val radius = if (km) 6372.8 else 3959.0
+    val rFirstLat = firstLat.toRadians
+    val rSecondLat = secondLat.toRadians
+
+    // The fastest screen
+    val dLat = (rFirstLat - rSecondLat)
+    if (abs(dLat) * radius > dist ) return false
+
+    val cosLat1 = cos(rFirstLat)
+    val cosLat2 = cos(rSecondLat)
+
+    // The second fastest screen
+    val dLon = (firstLon - secondLon).toRadians
+    val shrink = min(cosLat1, cosLat2)
+    val pdLon = if (dLon < 0) -dLon else dLon
+    if ((if (pdLon > 180) 360 - pdLon else pdLon) * shrink * radius > dist )
+      return false
+
+    // The precision screen (haversine calculation)
+    val radDist = 2 * asin( sqrt( pow(sin(dLat/2),2) +
+      pow(sin(dLon/2),2) * cosLat1 * cosLat2 ))
+    if (radDist * radius > dist) return false
+    else return true
+  }
+
+  /**
+    haversineDistance returns the distance between two points.
+    */
+  def haversineDistance(
+    firstLat: Float, firstLon: Float,
+    secondLat: Float, secondLon: Float,
+    km: Boolean = false
+  ): Float = {
+    import scala.math.{Pi, cos, max, abs, toRadians, pow, sin, asin, sqrt}
+    val radius = if (km) 6372.8 else 3959.0
+
+    val rLat1 = firstLat.toRadians
+    val rLat2 = secondLat.toRadians
+    val dLat = (rLat1 - rLat2)
+    val cosLat1 = cos(rLat1)
+    val cosLat2 = cos(rLat2)
+    val dLon = (firstLon - secondLon).toRadians
+    val radDist = 2 * asin( sqrt( pow(sin(dLat/2),2) +
+      pow(sin(dLon/2),2) * cosLat1 * cosLat2 ))
+    return (radDist * radius).toFloat
+  }
+
 }
 

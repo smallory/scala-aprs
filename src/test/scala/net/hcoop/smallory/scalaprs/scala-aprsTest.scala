@@ -69,6 +69,59 @@ class FunSpecTests extends FunSpec with Matchers {
         assert(m("c") === "Kathmandu")
       }
     }
+    describe("haversineDistance function") {
+      it("should return zero for point to self distance") {
+        assert( haversineDistance(
+            24.345f, -111.11f, 24.345f, -111.11f, km=false) ===
+          (0f +- 0.0001f))
+        assert( haversineDistance(
+            -60f, 1.1f, -60f, 1.1f, km=true) ===
+          (0f +- 0.0001f))
+      }
+      it("should get example distances right") {
+        assert( haversineDistance(
+          36.12f,-86.67f,33.94f,-118.40f, km=true) ===
+          (2887.25995f +- 0.01f))
+      }
+    }
+    describe("withinRadius function") {
+      it("should identify a point as within any radius of self") {
+        assert( withinRadius(
+          24.345f, -111.11f, 24.345f, -111.11f, 1f, km=false) === true)
+        assert( withinRadius(
+          24.345f, -111.11f, 24.345f, -111.11f, 1f, km=true) === true)
+        assert( withinRadius(
+            -60f, 1.1f, -60f, 1.1f, 0.01f, km=false) === true)
+        assert( withinRadius(
+            -60f, 1.1f, -60f, 1.1f, 0.01f, km=true) === true)
+      }
+      it("should differentiate between closer and further") {
+        // checking around borders of example
+        assert( withinRadius(
+          36.12f,-86.67f,33.94f,-118.40f, 2887.2f, km=true) === false)
+        assert( withinRadius(
+          36.12f,-86.67f,33.94f,-118.40f, 2887.3f, km=true) === true)
+        assert( withinRadius(
+          36.12f,-86.67f,33.94f,-118.40f, 2887.2f, km=false) === true)
+        assert( withinRadius(
+          36.12f,-86.67f,33.94f,-118.40f, 2887.2f) === true)
+        // Bump outside
+        assert( withinRadius(
+          42.12f,-86.67f,33.94f,-118.40f, 2887.31f, km=true) === false)
+        assert( withinRadius(
+          36.12f,-86.67f,33.94f,-118.40f, 2887.26f, km=true) === false)
+        // Bump inside
+        assert( withinRadius(
+          36.11f,-87.67f,33.94f,-118.40f, 2887.26f, km=true) === true)
+        assert( withinRadius(
+          36.12f,-96.67f,33.94f,-118.40f, 2887.26f, km=true) === true)
+        // change units to succeed
+        assert( withinRadius(
+          36.12f,-86.67f,32.94f,-118.40f, 2887.5f) === true)
+        assert( withinRadius(
+          36.12f,-86.67f,33.94f,-118.40f, 2887.26f) === true)
+      }
+    }
   }
 }
 

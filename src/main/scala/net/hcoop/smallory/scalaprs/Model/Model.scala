@@ -18,7 +18,7 @@ abstract class Model extends Serializable {
   var buildTime: Long = Long.MaxValue
   var earliestData: Long = Long.MinValue
   var lookback: Duration = Duration.ofDays(1)
-  var radius: Float = 15f // nautical miles
+  var radius: Float = 15f // miles
 
   def addObservation(obs: WxObservation): Unit
 
@@ -39,9 +39,8 @@ abstract class Model extends Serializable {
   /** Test to see if a data record is in the region this model uses.
     * Filtering main stream, so keep it fast.
     */
-  def distFilter(lat: Float, lon: Float): Boolean = {
-    true // TODO: tighten up distance filtering algorithm 
-  }
+  def distFilter(obsLat: Float, obsLon: Float): Boolean =
+    withinRadius(lat, lon, obsLat, obsLon, radius)
 
   // apply gives instances of the class a '(' access method.
   def apply(when: ZonedDateTime): Float =
