@@ -6,15 +6,48 @@
 
 package net.hcoop.smallory.scalaprs
 
-import scala.collection.mutable.{ArrayBuffer, Map}
+import scala.collection.mutable.{ArrayBuffer, Map => MuteMap}
 
-class User extends Serializable {
-  var user: String = ""
-  var lat: Float = Float.NaN
-  var lon: Float = Float.NaN
+class User (
+  val user: String = "",
+  val lat: Float = Float.NaN,
+  val lon: Float = Float.NaN
+) extends Serializable {
   // measurement(s), comparison, value, action
   var models: Map[String, Model] = Map()
-  var alerts: ArrayBuffer[Alert] = ArrayBuffer()
+  var alerts: List[Alert] = List()
+
+  var whereClause: String = "WHERE 1=1"
+  def addObservation(obs: WxObservation) = {
+    models.map( m => {
+      // remember that m is a tuple from a map
+      m._2.addObservation(obs)
+    })
+  }
+
+  def checkAlerts(): ArrayBuffer[String] = {
+    val ret: ArrayBuffer[String] = ArrayBuffer()
+    ret ++= alerts
+      .map( a => {
+        // TODO: make this compatible with min/max guessing Alerts
+        val av = a.value(models)
+        a.comparison match {
+          case ">"  | "gt" =>
+            if (av > a.limit) Some(a.message) else None
+          case ">=" | "ge" | "=>" =>
+            if (av >= a.limit) Some(a.message) else None
+          case "="  | "eq" | "==" =>
+            if (av > a.limit) Some(a.message) else None
+          case "<=" | "le" | "=<" =>
+            if (av <= a.limit) Some(a.message) else None
+          case "<"  | "lt" =>
+            if (av < a.limit) Some(a.message) else None
+        }
+      })
+      .filter(_ != None)
+      .map(a => a.get)
+    return ret
+  }
 }
 
 object User {
@@ -24,8 +57,7 @@ object User {
     */
   def apply(defn: String): Option[User] = {
     val commentRegex = """^ *#""".r
-    val ll = new User()
-    if (defn.length < 1) return None
+      if (defn.length < 1) return None
     commentRegex findFirstIn defn match {
       case Some(x) => return None
       case None => {}
@@ -33,18 +65,27 @@ object User {
     var tokens: Array[String] = defn.split(",")
     if (tokens.length < 3) return None
 
-    ll.user = tokens(0)
-    ll.lat = AprsPosition.dddmmmmmToFloat(tokens(1))
-    ll.lon = AprsPosition.dddmmmmmToFloat(tokens(2))
+    val ll = new User(
+      user = tokens(0),
+      lat = AprsPosition.dddmmmmmToFloat(tokens(1)),
+      lon = AprsPosition.dddmmmmmToFloat(tokens(2))
+    )
+
+    val alertsArray: ArrayBuffer[Alert] = ArrayBuffer()
     for (i <- 3 until tokens.length) {
-      ll.alerts += alerts.Alert(tokens(i))
+      alertsArray += alerts.Alert(tokens(i))
     }
+    ll.alerts = alertsArray.toList
+
+    val modMap: MuteMap[String, Model] = MuteMap()
     ll.alerts.map( a => {
       a.models map ( m => {
-        if (!(ll.models contains m))
-          ll.models(m) = models.Model(ll.lat, ll.lon, m)
+        if (!(modMap contains m))
+          modMap(m) = models.Model(ll.lat, ll.lon, m)
       })
     })
+    ll.models = modMap.toMap
+
     return Some(ll)
   }
 }

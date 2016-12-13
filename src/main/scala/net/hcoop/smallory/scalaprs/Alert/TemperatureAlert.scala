@@ -8,6 +8,7 @@ import scala.Exception
 
 class TemperatureAlert extends Alert with Serializable {
   var comparison: String = "<"
+  var compareTo: String = ""
   var limit: Float = 32.0f
   val message: String = "Freezing temperature rather likely."
   val models: Vector[String] = Vector("temperature")

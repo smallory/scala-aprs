@@ -7,7 +7,17 @@ import java.time.{ZonedDateTime, Instant}
 
 import net.hcoop.smallory.scalaprs._
 
-class LastTemperature extends Model {
+class LastTemperature (
+  latitude: Float,
+  longitude: Float,
+  modelTime: Long,
+  startTime: Long
+) extends Model(
+  latitude,
+  longitude,
+  modelTime,
+  startTime
+) {
   import net.hcoop.smallory.scalaprs.models.{LastTemperature => our}
   val validUnits = our.validUnits
   _unit = "F"

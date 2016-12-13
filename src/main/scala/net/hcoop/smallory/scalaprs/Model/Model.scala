@@ -9,15 +9,19 @@ import net.hcoop.smallory.scalaprs._
 
 import java.time.{ZonedDateTime, Duration, Instant}
 
-abstract class Model extends Serializable {
+abstract class Model (
+  latitude: Float,
+  longitude: Float,
+  modelTime: Long,
+  startTime: Long
+) extends Serializable {
   import net.hcoop.smallory.scalaprs.models.{Model => our}
+  val lat: Float = latitude
+  val lon: Float = longitude
+  val buildTime: Long = modelTime
+  val earliestData: Long = startTime
   val validUnits: List[String]
   var _unit: String = ""
-  var lat: Float = 0f
-  var lon: Float = 0f
-  var buildTime: Long = Long.MaxValue
-  var earliestData: Long = Long.MinValue
-  var lookback: Duration = Duration.ofDays(1)
   var radius: Float = 15f // miles
 
   def addObservation(obs: WxObservation): Unit
@@ -58,37 +62,30 @@ object Model {
   // List default unit as first unit.
   val validUnits: List[String] = List("")
 
-  /** set values in model, so that the logic used by apply() can be tested.
-    * Uses that fact that objects are passed by value. Not a function,
-    * purely side-effects.
-    */
-  def tweak(mm: Model, lat: Float, lon: Float, time: Long) {
-    tweak(mm, lat, lon, Instant.ofEpochSecond(time).atZone(utc))
-  }
-  def tweak(mm: Model, lat: Float, lon: Float, time: ZonedDateTime) {
-    mm.lat = lat
-    mm.lon = lon
-    mm.buildTime = time.toInstant.getEpochSecond()
-    mm.earliestData = time.minus(mm.lookback).toInstant.getEpochSecond()
-  }
-
   /**
     Model.apply(measure) - create the default production model for a particular measure.
 
-    New classes should not be replace the defaults used here until tests show the change
-    is an upgrade to the system as a whole.
+    New classes should not be replace the defaults used here
+    until tests show the change is an upgrade to the system
+    as a whole.
     */
   def apply(
     lat: Float, lon: Float,
     measure: String,
-    time: Long = ZonedDateTime.now(utc).toInstant.getEpochSecond // Override to build models at test times
+    // Override the following to build models at test times
+    time: Long = ZonedDateTime.now(utc).toInstant.getEpochSecond,
+    lookback: Duration = Duration.ofDays(1) 
   ):Model = {
+    val zBuildTime = Instant.ofEpochSecond(time).atZone(utc)
+    val tStart = zBuildTime.minus(lookback)
+      .toInstant.getEpochSecond()
     val mm = measure match {
-      case "t" | "temperature" => new LastTemperature()
-      case "X" | "radiation" => new LastRadiation()
+      case "t" | "temperature" =>
+        new LastTemperature(lat, lon, time, tStart)
+      case "X" | "radiation" =>
+        new LastRadiation(lat, lon, time, tStart)
       //case _ => new Model()
     }
-    tweak(mm, lat, lon, time)
     return mm
   }
 

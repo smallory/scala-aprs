@@ -6,7 +6,17 @@ package net.hcoop.smallory.scalaprs.models
 import java.time.ZonedDateTime
 import net.hcoop.smallory.scalaprs._
 
-class LastRadiation extends Model {
+class LastRadiation (
+  latitude: Float,
+  longitude: Float,
+  modelTime: Long,
+  startTime: Long
+) extends Model(
+  latitude,
+  longitude,
+  modelTime,
+  startTime
+) {
   import net.hcoop.smallory.scalaprs.models.{LastRadiation => our}
   val validUnits = our.validUnits
   _unit = "nSv"

@@ -18,6 +18,7 @@ import scala.Exception
 
 class RadiationAlert extends Alert with Serializable {
   var comparison: String = ">"
+  var compareTo: String = ""
   var limit: Float = 2000.0f
   val message: String = "High ionizing radiation levels detected."
   val models: Vector[String] = Vector("X")

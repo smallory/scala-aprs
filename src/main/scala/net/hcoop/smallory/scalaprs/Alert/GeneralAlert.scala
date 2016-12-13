@@ -11,6 +11,7 @@ import net.hcoop.smallory.scalaprs._
 
 class GeneralAlert (dataField: String) extends Alert with Serializable {
   var comparison: String = "<"
+  var compareTo: String = ""
   var limit: Float = 0.0f
   var message: String = s"Field $dataField triggered warning."
   val models: Vector[String] = Vector(dataField)

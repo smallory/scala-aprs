@@ -56,17 +56,14 @@ class UserTests extends FunSpec with Matchers {
         val t1 = User(example(0))
         assert(t1 !== None)
         var usr = t1.get
-        assert(usr.alerts.getClass.getName ===
-          "scala.collection.mutable.ArrayBuffer")
+        usr.alerts shouldBe a [List[_]]
         assert(usr.alerts.size === 1)
         assert(usr.alerts(0).getClass.getName ===
           "net.hcoop.smallory.scalaprs.alerts.RadiationAlert")
-
         val t3 = User(example(2))
         assert(t3 !== None)
         usr = t3.get
-        assert(usr.alerts.getClass.getName ===
-          "scala.collection.mutable.ArrayBuffer")
+        usr.alerts shouldBe a [scala.collection.immutable.List[_]]
         assert(usr.alerts.size === 1)
         assert(usr.alerts(0).getClass.getName ===
           "net.hcoop.smallory.scalaprs.alerts.TemperatureAlert")
@@ -74,8 +71,7 @@ class UserTests extends FunSpec with Matchers {
         val t4 = User(example(3))
         assert(t4 !== None)
         usr = t4.get
-        assert(usr.alerts.getClass.getName ===
-          "scala.collection.mutable.ArrayBuffer")
+        usr.alerts shouldBe a [scala.collection.immutable.List[_]]
         assert(usr.alerts.size === 2)
         assert(usr.alerts(0).getClass.getName ===
           "net.hcoop.smallory.scalaprs.alerts.RadiationAlert")
@@ -86,8 +82,7 @@ class UserTests extends FunSpec with Matchers {
         val t1 = User(example(0))
         assert(t1 !== None)
         var usr = t1.get
-        assert(usr.models.getClass.getName ===
-          "scala.collection.mutable.HashMap")
+        usr.models shouldBe a [scala.collection.immutable.Map[_,_]]
         assert(usr.models.size === 1)
         assert(usr.models contains "X") // from RadiationAlert
         assert(usr.models("X").getClass.getName ===
@@ -96,8 +91,7 @@ class UserTests extends FunSpec with Matchers {
         val t3 = User(example(2))
         assert(t3 !== None)
         usr = t3.get
-        assert(usr.models.getClass.getName ===
-          "scala.collection.mutable.HashMap")
+        usr.models shouldBe a [scala.collection.immutable.Map[String,Model]]
         assert(usr.models.size === 1)
         assert(usr.models contains "temperature") // from TemperatureAlert
         assert(usr.models("temperature").getClass.getName ===
@@ -106,8 +100,7 @@ class UserTests extends FunSpec with Matchers {
         val t4 = User(example(3))
         assert(t4 !== None)
         usr = t4.get
-        assert(usr.models.getClass.getName ===
-          "scala.collection.mutable.HashMap")
+        usr.models shouldBe a [scala.collection.immutable.Map[_,_]]
         assert(usr.models.size === 2)
         assert(usr.models contains "X") // from RadiationAlert
         assert(usr.models contains "temperature") // from TemperatureAlert

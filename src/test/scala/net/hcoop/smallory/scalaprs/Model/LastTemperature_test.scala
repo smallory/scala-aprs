@@ -49,9 +49,10 @@ class LastTemperature_test extends FunSpec with Matchers {
         .toInstant.getEpochSecond();
       val tAfter = ZonedDateTime.parse("2016-11-20T15:15:31Z")
         .toInstant.getEpochSecond();
-      def lat = 45.0f
-      def lon = 102.0f
-      val c = Model(lat, lon, "t", tModel)
+      val lat = 45.0f
+      val lon = 102.0f
+      val back = Duration.ofDays(1)
+      val c = Model(lat, lon, "t", tModel, back)
       assert(c.timeFilter(tModel) === true)
       assert(c.timeFilter(tBefore) === false)
       assert(c.timeFilter(tDuring) === true)

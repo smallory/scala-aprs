@@ -6,6 +6,7 @@ package net.hcoop.smallory.scalaprs.alerts
 
 trait Alert {
   def comparison: String // = ">"
+  def compareTo: String // ""|"max","min"
   def limit: Float // = Float.NaN
   def message: String // = ""
   def models: Vector[String]
@@ -21,4 +22,25 @@ object Alert {
       case "h"|"l"|"s"|"c"|"p"|"P" => GeneralAlert(parts)
     }
   }
+
+  /*
+    TODO:
+    This is here as a note on how to improve this part, but
+    the supporting *.apply(x: MatchObject) are not available
+    yet. Thus this is commented out as a suggection until it
+    won't break the build.
+    */
+  // def applyRegex(lert: String): Option[Alert] = {
+  //   val alertRegex =
+  //     """([a-zA-Z0-9]+) *(min|max|low|high|)\w*([=><]*)\w*(\w[a-zA-Z0-9.-]|)""".r
+  //   return (alertRegex findFirstIn lert) match {
+  //     case None => None
+  //     case Some(mch) =>
+  //       mch(0).toLowerCase match {
+  //         case "t" | "temperature" => TemperatureAlert(mch)
+  //         case "X" | "radiation" => RadiationAlert(mch)
+  //         case "h"|"l"|"s"|"c"|"p"|"P" => GeneralAlert(mch)
+  //       }
+  //   }
+  //}
 }
