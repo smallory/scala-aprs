@@ -31,7 +31,7 @@ class User (
       .map( a => {
         // TODO: make this compatible with min/max guessing Alerts
         val av = a.value(models)
-        a.comparison match {
+        if (av != Float.NaN) a.comparison match {
           case ">"  | "gt" =>
             if (av > a.limit) Some(a.message) else None
           case ">=" | "ge" | "=>" =>
@@ -42,7 +42,7 @@ class User (
             if (av <= a.limit) Some(a.message) else None
           case "<"  | "lt" =>
             if (av < a.limit) Some(a.message) else None
-        }
+        } else None
       })
       .filter(_ != None)
       .map(a => a.get)

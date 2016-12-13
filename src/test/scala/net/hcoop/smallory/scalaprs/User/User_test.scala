@@ -1,6 +1,9 @@
 package net.hcoop.smallory.scalaprs
 
 import org.scalatest.{FunSuite, FlatSpec, FunSpec, Matchers}
+import java.time.{ZonedDateTime}
+import net.hcoop.smallory.scalaprs.models.{LastTemperature}
+import net.hcoop.smallory.scalaprs.alerts.{TemperatureAlert}
 
 class UserTests extends FunSpec with Matchers {
   val example = List(
@@ -11,6 +14,30 @@ class UserTests extends FunSpec with Matchers {
     "",
     "# that was a blank line to ignore"
   )
+  val wxa: Array[WxObservation] = Array(
+    WxObservation(39.584f,-105.17f,
+      ZonedDateTime.parse("2016-11-20T15:14:30Z").toInstant.getEpochSecond(),
+      "t", 36f, "farenheit"),
+    WxObservation(39.584f,-105.17f,
+      ZonedDateTime.parse("2016-11-20T15:15:30Z").toInstant.getEpochSecond(),
+      "t", 34f, "farenheit"),
+    WxObservation(39.584f,-105.17f,
+      ZonedDateTime.parse("2016-11-20T15:16:30Z").toInstant.getEpochSecond(),
+      "t", 32f, "farenheit"),
+    WxObservation(39.584f,-105.17f,
+      ZonedDateTime.parse("2016-11-20T15:17:30Z").toInstant.getEpochSecond(),
+      "t", 30f, "farenheit")
+    )
+  val tWxaModel = ZonedDateTime.parse("2016-11-20T15:17:32Z")
+      .toInstant.getEpochSecond();
+  def setupWxaUser(): User = {
+    def lat = 39.584f
+    def lon = -105.17f
+    // "two@example.com,39.584,-105.17,temperature"
+    val uu = User(example(2)).get
+    wxa.foreach(obs => uu.addObservation(obs))
+    return uu
+  }
   describe("In User class and companion object") {
     describe("the companion apply() factory"){
       it("should return None from comments and blank lines") {
@@ -91,7 +118,7 @@ class UserTests extends FunSpec with Matchers {
         val t3 = User(example(2))
         assert(t3 !== None)
         usr = t3.get
-        usr.models shouldBe a [scala.collection.immutable.Map[String,Model]]
+        usr.models shouldBe a [scala.collection.immutable.Map[_,_]]
         assert(usr.models.size === 1)
         assert(usr.models contains "temperature") // from TemperatureAlert
         assert(usr.models("temperature").getClass.getName ===
@@ -108,6 +135,26 @@ class UserTests extends FunSpec with Matchers {
           "net.hcoop.smallory.scalaprs.models.LastRadiation")
         assert(usr.models("temperature").getClass.getName ===
           "net.hcoop.smallory.scalaprs.models.LastTemperature")
+      }
+    }
+    describe("when given WxObservations") {
+      it("should load each model") {
+        val uu = setupWxaUser()
+        assert(uu.models contains "temperature")
+        uu.models("temperature") shouldBe a [LastTemperature]
+
+        assert(uu.alerts.size === 1)        
+        uu.alerts(0) shouldBe a [TemperatureAlert]
+        assert(uu.alerts(0).comparison === "<")
+        assert(uu.alerts(0).limit === (32.0f +- 0.001f))
+
+        assert(uu.models("temperature")() === (30.0f +- 0.01f))
+        assert(uu.models("temperature").max() === (36.0f +- 0.01f))
+        assert(uu.models("temperature").min() === (30.0f +- 0.01f))
+
+        val aa = uu.checkAlerts()
+        assert(aa.size === 1)
+        assert(aa(0) === "Freezing temperature rather likely.")
       }
     }
   }
