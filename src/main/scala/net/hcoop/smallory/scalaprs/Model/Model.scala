@@ -9,7 +9,7 @@ import net.hcoop.smallory.scalaprs._
 
 import java.time.{ZonedDateTime, Duration, Instant}
 
-abstract class Model {
+abstract class Model extends Serializable {
   import net.hcoop.smallory.scalaprs.models.{Model => our}
   val validUnits: List[String]
   var _unit: String = ""

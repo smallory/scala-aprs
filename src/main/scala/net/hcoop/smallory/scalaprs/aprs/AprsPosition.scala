@@ -101,7 +101,13 @@ object AprsPosition {
 
   def dddmmmmmToFloat(degs: String): Float = {
     val dmm = parseDegMin findFirstMatchIn degs
-    if (dmm == None) return 0f
+    if (dmm == None) {
+      try {
+        return degs.toFloat
+      } catch {
+        case e: Exception => return 0f
+      }
+    }
     val m = dmm.get
     val sign = m.group("hemi") match {
       case "N" | "E" | "n" | "e" => 1

@@ -6,7 +6,7 @@
 
 package net.hcoop.smallory.scalaprs
 
-import scala.collection.mutable.ArrayBuffer
+import scala.collection.mutable.{ArrayBuffer, Map}
 
 class User extends Serializable {
   var user: String = ""
@@ -39,6 +39,12 @@ object User {
     for (i <- 3 until tokens.length) {
       ll.alerts += alerts.Alert(tokens(i))
     }
+    ll.alerts.map( a => {
+      a.models map ( m => {
+        if (!(ll.models contains m))
+          ll.models(m) = models.Model(ll.lat, ll.lon, m)
+      })
+    })
     return Some(ll)
   }
 }
