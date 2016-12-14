@@ -101,7 +101,7 @@ object AprsWeather {
     ("g", (3, "mph", "peak wind gust")),
     ("c", (3, "degrees", "wind direction")),
     ("s", (3, "mph", "1-minute sustained wind")),
-    ("t", (3, "farenheit", "temperature")),
+    ("t", (3, "F", "temperature")),
     ("r", (3, "1/100 inch","rainfall in last hour")),
     ("p", (3, "1/100 inch","rainfall in last 24 hours")),
     ("P", (3, "1/100 inch","rainfall since midnight")),
@@ -111,10 +111,10 @@ object AprsWeather {
     ("l", (3, "W/m^2", "of luminosity minus 1000 W/m^2")),
     ("s", (3, "in", "new snow in last 24 hours")),
     ("#", (3, "count", "raw count of rain detector")),
-    ("F", (4, "feet", "height of water above reference")),
-    ("f", (3, "meters", "height of water above reference")),
-    ("V", (3, "volts", "charge on battery")),
+    ("F", (4, "ft", "height of water above reference")),
+    ("f", (3, "m", "height of water above reference")),
+    ("V", (3, "v", "charge on battery")),
     ("Z", (2, "", "device type")),
-    ("X", (3, "nanosieverts", "radiation, as xxy = xx*10^y nanosieverts/hour"))
+    ("X", (3, "nSv", "radiation, as xxy = xx*10^y nanosieverts/hour"))
    )
 }

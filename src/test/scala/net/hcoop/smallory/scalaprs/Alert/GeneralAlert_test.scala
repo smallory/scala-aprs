@@ -4,9 +4,9 @@ import net.hcoop.smallory.scalaprs._
 import org.scalatest.{FunSpec, Matchers}
 import java.time.{ZoneId, ZonedDateTime}
 
-class RadiationAlert_test extends FunSpec with Matchers {
-  // Default test: ionizing radiation exceeds 2000 nano-Sieverts per hour
-  describe("RadiationAlert") {
+class GeneralAlert_test extends FunSpec with Matchers {
+  // Default test: is $"id" > 0
+  describe("GeneralAlert") {
     describe("with default instantiation") {
       it("should return high value in default case") {
         val time = ZonedDateTime.parse("2016-11-20T15:15:30Z[UTC]")
@@ -14,25 +14,27 @@ class RadiationAlert_test extends FunSpec with Matchers {
         def lat = 45.0d
         def lon = -102.0d
         val models: Map[String, Model] = Map(
-          ("X" -> StubModel(time, lat, lon, 20, 2100, 1000))
+          ("s" -> StubModel(time, lat, lon, -20, 100, 1))
         )
-        val ra = Alert("radiation")
-        assert(ra.limit === (2000d +- 0.01d))
+        val ra = Alert("s")
+        assert(ra.models === Vector("s"))
+        assert(ra.limit === (0d +- 0.01d))
         assert(ra.comparison === ">")
-        assert(ra.value(models) === (2100d +- 0.01d))
+        assert(ra.value(models) === (100d +- 0.01d))
       }
-      it("should return high value even if '<' selected") {
+      it("should return low value if '<' selected") {
         val time = ZonedDateTime.parse("2016-11-20T15:15:30Z[UTC]")
           .toInstant.getEpochSecond();
         def lat = 45.0d
         def lon = -102.0d
         val models: Map[String, Model] = Map(
-          ("X" -> StubModel(time, lat, lon, 20, 2100, 1000))
+          ("H" -> StubModel(time, lat, lon, -20, 100, 10))
         )
-        val ra = Alert("radiation < 50")
+        val ra = Alert("H < 50")
+        assert(ra.models === Vector("H"))
         assert(ra.limit === (50d +- 0.01d))
         assert(ra.comparison === "<")
-        assert(ra.value(models) === (2100d +- 0.01d))
+        assert(ra.value(models) === (-20d +- 0.01d))
       }
     }
   }

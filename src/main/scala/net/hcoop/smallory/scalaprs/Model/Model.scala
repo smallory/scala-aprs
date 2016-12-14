@@ -84,7 +84,8 @@ object Model {
         new LastTemperature(lat, lon, time, tStart)
       case "X" | "radiation" =>
         new LastRadiation(lat, lon, time, tStart)
-      //case _ => new Model()
+      case "g"|"c"|"s"|"t"|"r"|"p"|"P"|"h"|"b"|"L"|"l"|"s"|"#"|"F"|"f"|"V"|"Z"|"X" =>
+        new GeneralLastValue( measure, lat, lon, time, tStart)
     }
     return mm
   }
