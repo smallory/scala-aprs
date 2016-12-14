@@ -106,7 +106,7 @@ package object scalaprs{
     secondLat: Float, secondLon: Float,
     km: Boolean = false
   ): Float = {
-    import scala.math.{Pi, cos, max, abs, toRadians, pow, sin, asin, sqrt}
+    import scala.math.{cos, max, abs, toRadians, pow, sin, asin, sqrt}
     val radius = if (km) 6372.8 else 3959.0
 
     val rLat1 = firstLat.toRadians
