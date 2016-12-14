@@ -19,7 +19,8 @@ object Alert {
     return parts(0).toLowerCase match {
       case "t" | "temperature" => TemperatureAlert(parts)
       case "X" | "radiation" => RadiationAlert(parts)
-      case "h"|"l"|"s"|"c"|"p"|"P" => GeneralAlert(parts)
+      case "g"|"c"|"s"|"t"|"r"|"p"|"P"|"h"|"b"|"L"|"l"|"s"|"#"|"F"|"f"|"V"|"Z"|"X" =>
+        GeneralAlert(parts)
     }
   }
 

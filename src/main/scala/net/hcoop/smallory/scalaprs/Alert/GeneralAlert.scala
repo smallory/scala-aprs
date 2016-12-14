@@ -9,21 +9,21 @@ import scala.Exception
 import java.time.ZonedDateTime
 import net.hcoop.smallory.scalaprs._
 
-class GeneralAlert (dataField: String) extends Alert with Serializable {
-  var comparison: String = "<"
+class GeneralAlert (valueId: String) extends Alert with Serializable {
+  var comparison: String = ">"
   var compareTo: String = ""
   var limit: Double = 0.0d
-  var message: String = s"Field $dataField triggered warning."
-  val models: Vector[String] = Vector(dataField)
+  var message: String = s"Field $valueId triggered warning."
+  val models: Vector[String] = Vector(valueId)
 
   override def value(models: Map[String, Model]): Double = {
     comparison match {
-      case "<" | "<=" | "le" | "lt" => return models(dataField).min()
-      case ">" | ">=" | "ge" | "gt" => return models(dataField).max()
-      case "=" | "eq"   => return models(dataField)(ZonedDateTime.now(utc))
+      case "<" | "<=" | "le" | "lt" => return models(valueId).min()
+      case ">" | ">=" | "ge" | "gt" => return models(valueId).max()
+      case "=" | "eq"   => return models(valueId)(ZonedDateTime.now(utc))
     }
   }
-  def updateMessage() = message = s"Field $dataField $comparison $limit."
+  def updateMessage() = message = s"Field $valueId $comparison $limit."
 }
 
 object GeneralAlert {

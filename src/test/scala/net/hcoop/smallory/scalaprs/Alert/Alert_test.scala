@@ -1,9 +1,11 @@
 package net.hcoop.smallory.scalaprs.alerts
 
+import net.hcoop.smallory.scalaprs._
+
 import org.scalatest.{FunSpec, Matchers}
 import java.time.{ZoneId, ZonedDateTime}
 
-class RadiationAlert_test extends FunSpec with Matchers {
+class Alert_test extends FunSpec with Matchers {
   describe("Alert trait companion class") {
     describe("should instantiate from strings") {
       it("Can create generic Ionizing radiiation alerts") {

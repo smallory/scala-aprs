@@ -14,7 +14,11 @@ class TemperatureAlert extends Alert with Serializable {
   val models: Vector[String] = Vector("temperature")
 
   override def value(models: Map[String, Model]): Double = {
-    return models("temperature").min()
+    comparison match {
+      case "<" | "<=" | "le" | "lt" => return models("temperature").min()
+      case ">" | ">=" | "ge" | "gt" => return models("temperature").max()
+      case "=" | "eq"   => return models("temperature")()
+    }
   }
 }
 
