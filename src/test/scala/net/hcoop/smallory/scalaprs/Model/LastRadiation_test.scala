@@ -5,32 +5,32 @@ import net.hcoop.smallory.scalaprs.WxObservation
 
 class LastRadiation_test extends FunSpec with Matchers {
   val radLow: Array[WxObservation] = Array(
-    WxObservation(0f, 0f,
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:30Z").toInstant.getEpochSecond(),
-      "X", 5f, "nSv"),
-    WxObservation(0f, 0f,
+      "X", 5d, "nSv"),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:31Z").toInstant.getEpochSecond(),
-      "X", 3f, "nSv"),
-    WxObservation(0f, 0f,
+      "X", 3d, "nSv"),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:32Z").toInstant.getEpochSecond(),
-      "X", 4f, "nSv"),
-    WxObservation(0f, 0f,
+      "X", 4d, "nSv"),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:29Z").toInstant.getEpochSecond(),
-      "X", 10f, "")
+      "X", 10d, "")
   )
   val radHigh: Array[WxObservation] = Array(
-    WxObservation(0f, 0f,
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:30Z").toInstant.getEpochSecond(),
-      "X", 500f, ""),
-    WxObservation(0f, 0f,
+      "X", 500d, ""),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:31Z").toInstant.getEpochSecond(),
-      "X", 1400f, ""),
-    WxObservation(0f, 0f,
+      "X", 1400d, ""),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:32Z").toInstant.getEpochSecond(),
-      "X", 2001f, ""),
-    WxObservation(0f, 0f,
+      "X", 2001d, ""),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:29Z").toInstant.getEpochSecond(),
-      "X", 10f, "")
+      "X", 10d, "")
   )
   describe("Model") {
     it("should produce LastRadiation when passed 'X'") {

@@ -4,13 +4,13 @@ import java.time.{ZonedDateTime, Duration}
 import org.scalatest.{FunSpec, Matchers}
 
 class Model_test extends FunSpec with Matchers {
-  def stubModel(date: Long, lat: Float, lon: Float): Model = {
+  def stubModel(date: Long, lat: Double, lon: Double): Model = {
     val mm = new Model(lat, lon, date, date - (24 *60 *60)){
       val validUnits: List[String] = List("")
-      def apply(when: Long): Float = 0f
+      def apply(when: Long): Double = 0d
       def addObservation(obs: WxObservation) = {}
-      def min(): Float = 0f
-      def max(): Float = 0f
+      def min(): Double = 0d
+      def max(): Double = 0d
       def maxTime(): ZonedDateTime = Model.getZDT(date)
       def minTime(): ZonedDateTime = Model.getZDT(date)
     }
@@ -23,8 +23,8 @@ class Model_test extends FunSpec with Matchers {
     //           .toInstant.getEpochSecond();
     //   val dayBefore = ZonedDateTime.parse("2016-11-19T15:15:30Z")
     //           .toInstant.getEpochSecond();
-    //   def lat = 45.0f
-    //   def lon = 102.0f
+    //   def lat = 45.0d
+    //   def lon = 102.0d
     //   val c = stubModel(tModel, lat, lon)
     //   assert(c.earliestData === dayBefore)
     // }
@@ -39,8 +39,8 @@ class Model_test extends FunSpec with Matchers {
               .toInstant.getEpochSecond();
       val tAfter = ZonedDateTime.parse("2016-11-20T15:15:31Z")
               .toInstant.getEpochSecond();
-      def lat = 45.0f
-      def lon = 102.0f
+      def lat = 45.0d
+      def lon = 102.0d
       val c = stubModel(tModel, lat, lon)
       assert(c.timeFilter(tBefore) === false)
       assert(c.timeFilter(tDuring) === true)
@@ -51,12 +51,12 @@ class Model_test extends FunSpec with Matchers {
     it("should filter out far away obs") {
       val tModel = ZonedDateTime.parse("2016-11-20T15:15:30Z")
               .toInstant.getEpochSecond();
-      def lat = 45.0f
-      def lon = -102.0f
-      def latNear = 45.0001f
-      def lonNear = -101.9999f
-      def latFar = 25.0001f
-      def lonFar = 102.0001f
+      def lat = 45.0d
+      def lon = -102.0d
+      def latNear = 45.0001d
+      def lonNear = -101.9999d
+      def latFar = 25.0001d
+      def lonFar = 102.0001d
       val c = stubModel(tModel, lat, lon)
       assert(c.distFilter(latNear, lonNear) === true)
       assert(c.distFilter(latFar, lonFar) === false)

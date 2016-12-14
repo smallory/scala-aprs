@@ -8,13 +8,16 @@ import java.time.format.FormatStyle.{FULL, LONG, MEDIUM, SHORT}
 import scala.collection.mutable.Map
 
 package object scalaprs{
-  type ObservationMap = scala.collection.mutable.Map[String, Float]
+  type ObservationMap = scala.collection.mutable.Map[String, Double]
   type Alert = net.hcoop.smallory.scalaprs.alerts.Alert
   type Model = net.hcoop.smallory.scalaprs.models.Model
 
   val utc = ZoneOffset.UTC
 
-  // Making certain that it's easy to change loggers.
+  // Making certain that it's easy to change loggers by
+  // keeping shims between project logging and libraries.
+  // Also allows detailed enable/disable of debug messages
+  // by changing logIgnore in code being debugged.
   var logIgnore: List[String] = List()
   def logAs(errType: String, message: String) = {
     if (!logIgnore.contains(errType))
@@ -68,9 +71,9 @@ package object scalaprs{
     to speed up filtering large sets of observations.
     */
   def withinRadius(
-    firstLat: Float, firstLon: Float,
-    secondLat: Float, secondLon: Float,
-    dist: Float, km: Boolean = false
+    firstLat: Double, firstLon: Double,
+    secondLat: Double, secondLon: Double,
+    dist: Double, km: Boolean = false
   ): Boolean = {
     import scala.math.{min, cos, max, abs, toRadians, pow, sin, asin, sqrt}
     val radius = if (km) 6372.8 else 3959.0
@@ -102,11 +105,11 @@ package object scalaprs{
     haversineDistance returns the distance between two points.
     */
   def haversineDistance(
-    firstLat: Float, firstLon: Float,
-    secondLat: Float, secondLon: Float,
+    firstLat: Double, firstLon: Double,
+    secondLat: Double, secondLon: Double,
     km: Boolean = false
-  ): Float = {
-    import scala.math.{cos, max, abs, toRadians, pow, sin, asin, sqrt}
+  ): Double = {
+    import scala.math.{cos, toRadians, pow, sin, asin, sqrt}
     val radius = if (km) 6372.8 else 3959.0
 
     val rLat1 = firstLat.toRadians
@@ -117,7 +120,7 @@ package object scalaprs{
     val dLon = (firstLon - secondLon).toRadians
     val radDist = 2 * asin( sqrt( pow(sin(dLat/2),2) +
       pow(sin(dLon/2),2) * cosLat1 * cosLat2 ))
-    return (radDist * radius).toFloat
+    return (radDist * radius).toDouble
   }
 
 }

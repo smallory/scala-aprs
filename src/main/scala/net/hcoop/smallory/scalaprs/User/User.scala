@@ -10,8 +10,8 @@ import scala.collection.mutable.{ArrayBuffer, Map => MuteMap}
 
 class User (
   val user: String = "",
-  val lat: Float = Float.NaN,
-  val lon: Float = Float.NaN
+  val lat: Double = Double.NaN,
+  val lon: Double = Double.NaN
 ) extends Serializable {
   // measurement(s), comparison, value, action
   var models: Map[String, Model] = Map()
@@ -31,7 +31,7 @@ class User (
       .map( a => {
         // TODO: make this compatible with min/max guessing Alerts
         val av = a.value(models)
-        if (av != Float.NaN) a.comparison match {
+        if (av != Double.NaN) a.comparison match {
           case ">"  | "gt" =>
             if (av > a.limit) Some(a.message) else None
           case ">=" | "ge" | "=>" =>
@@ -67,8 +67,8 @@ object User {
 
     val ll = new User(
       user = tokens(0),
-      lat = AprsPosition.dddmmmmmToFloat(tokens(1)),
-      lon = AprsPosition.dddmmmmmToFloat(tokens(2))
+      lat = AprsPosition.dddmmmmmToDouble(tokens(1)),
+      lon = AprsPosition.dddmmmmmToDouble(tokens(2))
     )
 
     val alertsArray: ArrayBuffer[Alert] = ArrayBuffer()

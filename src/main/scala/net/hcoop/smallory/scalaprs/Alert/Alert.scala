@@ -7,10 +7,10 @@ package net.hcoop.smallory.scalaprs.alerts
 trait Alert {
   def comparison: String // = ">"
   def compareTo: String // ""|"max","min"
-  def limit: Float // = Float.NaN
+  def limit: Double // = Double.NaN
   def message: String // = ""
   def models: Vector[String]
-  def value(models: Map[String, Model]): Float
+  def value(models: Map[String, Model]): Double
 }
 
 object Alert {

@@ -13,14 +13,14 @@ class AprsWeather {
   // many places. Central to project, gets a nice short name.
   var wx: ObservationMap = null
 
-  def get(key: String): Option[Float] = {
+  def get(key: String): Option[Double] = {
     if (wx.contains(key)) return Some(wx(key))
       else return None
   }
   def getObs(key: String): Option[WxObservation] = {
     if (wx.contains(key)) {
       return Some(WxObservation(
-        Float.NaN, Float.NaN, 0l, key, wx(key), our.weatherFields(key)._2 ))
+        Double.NaN, Double.NaN, 0l, key, wx(key), our.weatherFields(key)._2 ))
     } else return None
   }
 }
@@ -57,7 +57,7 @@ object AprsWeather {
       val wxMatch = wxSearch.get
       for (l <- "scgt") {
         val v = wxMatch.group(l.toString)
-        if ((missingValueRegex findFirstIn v) == None) m += (l.toString -> v.toFloat)
+        if ((missingValueRegex findFirstIn v) == None) m += (l.toString -> v.toDouble)
       }
       if (wxMatch.group("more").length > 2) m = m ++ getMoreWx(wxMatch.group("more"))
       return m
@@ -72,7 +72,7 @@ object AprsWeather {
     for (rex <- List(wx3digitRegex, wx4digitRegex, wx5digitRegex)) {
       for (mm <- rex findAllMatchIn moredat) {
         val vv = mm.group("value")
-        if ((missingValueRegex findFirstIn vv) == None) m += (mm.group("key") -> vv.toFloat)
+        if ((missingValueRegex findFirstIn vv) == None) m += (mm.group("key") -> vv.toDouble)
       }
     }
     // Special processing regexen
@@ -83,12 +83,12 @@ object AprsWeather {
           val kk = mm.group("key")
           kk match {
             // percents
-            case "h" => m += ( kk -> (if (vv == "00") 100f else vv.toFloat))
+            case "h" => m += ( kk -> (if (vv == "00") 100d else vv.toDouble))
             // lux rollover
-            case "l" => m += ( "L" -> (1000 + vv.toFloat))
+            case "l" => m += ( "L" -> (1000 + vv.toDouble))
             // Exponential measure expansion
             case "X" => m += ( kk ->
-                ( (vv take 2).toDouble * (scala.math.pow(10, (vv drop 2 take 1).toDouble)) ).toFloat)
+                ( (vv take 2).toDouble * (scala.math.pow(10, (vv drop 2 take 1).toDouble)) ).toDouble)
           }
         }
       }

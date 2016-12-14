@@ -100,7 +100,7 @@ class aprsWeatherTest extends FunSpec {
         assert(wx.get("c").isDefined)
         assert(wx.get("h").get === 99)
         // Finally got this working: type specification is neccessary
-        assert(wx.get("F").get === (-0.03f +- 0.0001f))
+        assert(wx.get("F").get === (-0.03d +- 0.0001d))
         assert(wx.get("F").get + 0.03 < 0.0001)
         assert(wx.get("F").get + 0.03 > -0.0001)
         assert(wx.get("c").get === 150)

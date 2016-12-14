@@ -10,14 +10,14 @@ class RadiationAlert_test extends FunSpec with Matchers {
         val a = Alert("radiation")
         assert(a.getClass.getName ===
           "net.hcoop.smallory.scalaprs.alerts.RadiationAlert")
-        assert(a.limit === (2000f +- 0.001f))
+        assert(a.limit === (2000d +- 0.001d))
         assert(a.comparison === ">")
       }
       it("Can create generic 'h' alert with GeneralAlert") {
         val a = Alert("h > 90")
         assert(a.getClass.getName ===
           "net.hcoop.smallory.scalaprs.alerts.GeneralAlert")
-        assert(a.limit === (90f +- 0.001f))
+        assert(a.limit === (90d +- 0.001d))
         assert(a.comparison === ">")
       }
     }

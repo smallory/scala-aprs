@@ -26,8 +26,8 @@ class AprsisPacket {
  // var location: Tuple2<Int, Int>
  // var time:
 
-  // def asRecord(): Tuple4(Float, Float, Datetime, Float) = {
-  //   val (fLat, fLon) = position.getFloat
+  // def asRecord(): Tuple4(Double, Double, Datetime, Double) = {
+  //   val (fLat, fLon) = position.getDouble
   //   (fLat, fLon, time, temp)
   // }
   def readPacket(msg: String) {
@@ -61,8 +61,8 @@ class AprsisPacket {
   }
 
   def getWxObservations(): ArrayBuffer[WxObservation] = {
-      //ArrayBuffer[(Float, Float, String, String, Float, String)] = {
-      // var ret: ArrayBuffer[(Float, Float, String, String, Float, String)] = ArrayBuffer()
+      //ArrayBuffer[(Double, Double, String, String, Double, String)] = {
+      // var ret: ArrayBuffer[(Double, Double, String, String, Double, String)] = ArrayBuffer()
     var ret: ArrayBuffer[WxObservation] = ArrayBuffer()
     try {
       val (lat, lon) = position.position()
@@ -73,7 +73,7 @@ class AprsisPacket {
         if (oval != None) {
           val oo = oval.get
           ret += WxObservation(
-            lat, lon, time, oo.feature, oo.value, oo.unit)
+            lat, lon, time, oo.id, oo.value, oo.unit)
         }
       }
     } catch {

@@ -8,8 +8,8 @@ import java.time.{ZonedDateTime, Instant}
 import net.hcoop.smallory.scalaprs._
 
 class LastTemperature (
-  latitude: Float,
-  longitude: Float,
+  latitude: Double,
+  longitude: Double,
   modelTime: Long,
   startTime: Long
 ) extends Model(
@@ -21,15 +21,15 @@ class LastTemperature (
   import net.hcoop.smallory.scalaprs.models.{LastTemperature => our}
   val validUnits = our.validUnits
   _unit = "F"
-  var lastObs: Float = Float.NaN
-  var minObs: Float = Float.MaxValue
+  var lastObs: Double = Double.NaN
+  var minObs: Double = Double.MaxValue
   var minObsTime: Long = Long.MinValue
-  var maxObs: Float = Float.MinValue
+  var maxObs: Double = Double.MinValue
   var maxObsTime: Long = Long.MinValue
   var timeLast: Long = Long.MinValue
 
   def addObservation(obs: WxObservation): Unit = {
-    if (obs.feature != "t") return ;
+    if (obs.id != "t") return ;
     if (obs.time > timeLast) {
       lastObs = obs.value
       timeLast = obs.time
@@ -45,21 +45,21 @@ class LastTemperature (
     return
   }
 
-  def doUnits(raw: Float): Float = {
+  def doUnits(raw: Double): Double = {
     // This needs to stay consistant with our.validUnits
     // but "case our.validUnits.head => lastTemp" not a stable identifier
     return _unit match {
       case "F" => return raw // F default in APRS system
-      case "C" => 5 * (raw - 32.0f) / 9
-        // case "F" => 32.0f + 9 * (lastTemp / 5)
+      case "C" => 5 * (raw - 32.0d) / 9
+        // case "F" => 32.0d + 9 * (lastTemp / 5)
     }
   }
 
-  def apply(when: Long): Float = doUnits(lastObs)
-  override def apply(): Float = doUnits(lastObs)
-  def max(): Float = doUnits(maxObs)
+  def apply(when: Long): Double = doUnits(lastObs)
+  override def apply(): Double = doUnits(lastObs)
+  def max(): Double = doUnits(maxObs)
   def maxTime(): ZonedDateTime = Model.getZDT(maxObsTime)
-  def min(): Float = doUnits(minObs)
+  def min(): Double = doUnits(minObs)
   def minTime(): ZonedDateTime = Model.getZDT(minObsTime)
 
 }

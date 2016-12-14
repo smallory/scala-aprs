@@ -10,19 +10,19 @@ import net.hcoop.smallory.scalaprs._
 import java.time.{ZonedDateTime, Duration, Instant}
 
 abstract class Model (
-  latitude: Float,
-  longitude: Float,
+  latitude: Double,
+  longitude: Double,
   modelTime: Long,
   startTime: Long
 ) extends Serializable {
   import net.hcoop.smallory.scalaprs.models.{Model => our}
-  val lat: Float = latitude
-  val lon: Float = longitude
+  val lat: Double = latitude
+  val lon: Double = longitude
   val buildTime: Long = modelTime
   val earliestData: Long = startTime
   val validUnits: List[String]
   var _unit: String = ""
-  var radius: Float = 15f // miles
+  var radius: Double = 15d // miles
 
   def addObservation(obs: WxObservation): Unit
 
@@ -43,16 +43,16 @@ abstract class Model (
   /** Test to see if a data record is in the region this model uses.
     * Filtering main stream, so keep it fast.
     */
-  def distFilter(obsLat: Float, obsLon: Float): Boolean =
+  def distFilter(obsLat: Double, obsLon: Double): Boolean =
     withinRadius(lat, lon, obsLat, obsLon, radius)
 
   // apply gives instances of the class a '(' access method.
-  def apply(when: ZonedDateTime): Float =
+  def apply(when: ZonedDateTime): Double =
     apply(when.toInstant.getEpochSecond())
-  def apply(): Float = apply(buildTime)
-  def apply(when: Long): Float
-  def min(): Float
-  def max(): Float
+  def apply(): Double = apply(buildTime)
+  def apply(when: Long): Double
+  def min(): Double
+  def max(): Double
   def maxTime(): ZonedDateTime
   def minTime(): ZonedDateTime
 }
@@ -70,7 +70,7 @@ object Model {
     as a whole.
     */
   def apply(
-    lat: Float, lon: Float,
+    lat: Double, lon: Double,
     measure: String,
     // Override the following to build models at test times
     time: Long = ZonedDateTime.now(utc).toInstant.getEpochSecond,

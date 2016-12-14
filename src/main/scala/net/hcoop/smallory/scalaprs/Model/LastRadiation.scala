@@ -7,8 +7,8 @@ import java.time.ZonedDateTime
 import net.hcoop.smallory.scalaprs._
 
 class LastRadiation (
-  latitude: Float,
-  longitude: Float,
+  latitude: Double,
+  longitude: Double,
   modelTime: Long,
   startTime: Long
 ) extends Model(
@@ -20,15 +20,15 @@ class LastRadiation (
   import net.hcoop.smallory.scalaprs.models.{LastRadiation => our}
   val validUnits = our.validUnits
   _unit = "nSv"
-  var lastObs: Float = Float.NaN
-  var minObs: Float = Float.MinValue
+  var lastObs: Double = Double.NaN
+  var minObs: Double = Double.MinValue
   var minObsTime: Long = Long.MinValue
-  var maxObs: Float = Float.MaxValue
+  var maxObs: Double = Double.MaxValue
   var maxObsTime: Long = Long.MinValue
   var timeLast: Long = Long.MinValue
 
   def addObservation(obs: WxObservation): Unit = {
-    if (obs.feature != "X") return ;
+    if (obs.id != "X") return ;
     if (obs.time > timeLast) {
       lastObs = obs.value
       timeLast = obs.time
@@ -45,10 +45,10 @@ class LastRadiation (
   }
 
   // No units checking while only one units available.
-  def apply(when: Long): Float =lastObs
-  def max(): Float = return maxObs
+  def apply(when: Long): Double =lastObs
+  def max(): Double = return maxObs
   def maxTime(): ZonedDateTime = Model.getZDT(maxObsTime)
-  def min(): Float = return minObs
+  def min(): Double = return minObs
   def minTime(): ZonedDateTime = Model.getZDT(minObsTime) 
 }
 

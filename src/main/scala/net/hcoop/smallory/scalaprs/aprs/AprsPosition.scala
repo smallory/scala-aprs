@@ -33,8 +33,8 @@ class AprsPosition {
   var maidenhead: String = null
   var table: String = "\\"
   var symbol: String = "."
-  var latf: Float = 0f
-  var lonf: Float = 0f
+  var latf: Double = 0d
+  var lonf: Double = 0d
   var timePosLength: Int = 0
 
   override def toString(): String = {
@@ -83,9 +83,9 @@ class AprsPosition {
       timePosLength = m.end
     }
   }
-  def position(): Tuple2[Float, Float] = {
-    if (latf == 0f && lats != "0000.00N") latf = our.dddmmmmmToFloat(lats)
-    if (lonf == 0f && lons != "00000.00W") lonf = our.dddmmmmmToFloat(lons)
+  def position(): Tuple2[Double, Double] = {
+    if (latf == 0d && lats != "0000.00N") latf = our.dddmmmmmToDouble(lats)
+    if (lonf == 0d && lons != "00000.00W") lonf = our.dddmmmmmToDouble(lons)
     return (latf, lonf)
   }
 
@@ -99,11 +99,11 @@ object AprsPosition {
     "date", "table", "zlat", "zlon", "symbol", "courseSpeed")
   val parseDegMin = new Regex("""(1?\d{2})([0-6]\d\.\d{2})([NSEWnsew])""", "deg", "min", "hemi")
 
-  def dddmmmmmToFloat(degs: String): Float = {
+  def dddmmmmmToDouble(degs: String): Double = {
     val dmm = parseDegMin findFirstMatchIn degs
     if (dmm == None) {
       try {
-        return degs.toFloat
+        return degs.toDouble
       } catch {
         case e: Exception => return 0f
       }
@@ -113,7 +113,7 @@ object AprsPosition {
       case "N" | "E" | "n" | "e" => 1
       case "W" | "S" | "s" | "w" => -1
     }
-    return sign * (m.group("deg").toFloat + (m.group("min").toFloat /60))
+    return sign * (m.group("deg").toDouble + (m.group("min").toDouble /60))
   }
 
   def apply(payload: String) = {
@@ -133,20 +133,20 @@ object AprsPosition {
          = -72.75 degrees
     */
 
-  def expandLon(llc: String): Float = {
-    return if(llc.size < 1) 0f else ((base91decode(llc)/190463.0) - 180).toFloat
+  def expandLon(llc: String): Double = {
+    return if(llc.size < 1) 0d else ((base91decode(llc)/190463.0) - 180).toDouble
   }
-  def expandLat(llc: String): Float = {
-    return if (llc.size < 1) 0f else (90.0 - (base91decode(llc)/380926.0)).toFloat
+  def expandLat(llc: String): Double = {
+    return if (llc.size < 1) 0d else (90.0 - (base91decode(llc)/380926.0)).toDouble
   }
 
-  def doubleLL(lons: String): Float = {
+  def doubleLL(lons: String): Double = {
     val i = lons.length - 1
     val hemi = lons drop i take 1
-    val deg = (lons take 2).toInt + ((lons drop 2 take i-2).toFloat / 60)
+    val deg = (lons take 2).toInt + ((lons drop 2 take i-2).toDouble / 60)
     if (hemi == "N" || hemi == "E") return deg
     else if (hemi == "W" || hemi == "S") return -deg
-    else return 0.0f
+    else return 0.0d
   }
 
   def stringLon(doubleLon: Double): String = {

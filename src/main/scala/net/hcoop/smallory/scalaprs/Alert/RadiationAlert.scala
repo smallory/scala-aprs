@@ -19,10 +19,10 @@ import scala.Exception
 class RadiationAlert extends Alert with Serializable {
   var comparison: String = ">"
   var compareTo: String = ""
-  var limit: Float = 2000.0f
+  var limit: Double = 2000.0d
   val message: String = "High ionizing radiation levels detected."
   val models: Vector[String] = Vector("X")
-  def value(models: Map[String, Model]): Float = {
+  def value(models: Map[String, Model]): Double = {
     return models("X").max()
   }
 }
@@ -32,11 +32,11 @@ object RadiationAlert {
     val ra = new RadiationAlert()
     setup.length match {
       case 2 => try {
-        ra.limit = setup(1).toFloat
+        ra.limit = setup(1).toDouble
       } catch { case e: Exception => {} }
       case 3 => try { 
         ra.comparison = setup(1)
-        ra.limit = setup(2).toFloat
+        ra.limit = setup(2).toDouble
       } catch {case e: Exception => {} }
       case _ => ;
     }

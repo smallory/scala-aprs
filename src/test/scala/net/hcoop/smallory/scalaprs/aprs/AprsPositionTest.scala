@@ -10,7 +10,7 @@ class aprsPositionTest extends FunSpec {
         assert(AprsPosition.expandLon("") === 0)
       }
       it("should pass example in spec") {
-        assert(AprsPosition.expandLon("<*e7") === (-72.75f +- .001f))
+        assert(AprsPosition.expandLon("<*e7") === (-72.75d +- .001d))
       }
     }
     describe("expandLat") {
@@ -19,31 +19,31 @@ class aprsPositionTest extends FunSpec {
       }
       it("should pass example in spec") {
         // 49 30'
-        assert(AprsPosition.expandLat("5L!!") === (49.5f +- .0001f))
+        assert(AprsPosition.expandLat("5L!!") === (49.5d +- .0001d))
       }
     }
-    describe("AprsPosition.dddmmmmmToFloat") {
+    describe("AprsPosition.dddmmmmmToDouble") {
       it("should return positive for North and East positions") {
-        assert(AprsPosition.dddmmmmmToFloat("4500.00N") === (45f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("9000.00N") === (90f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("0000.00N") === (0f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("04500.00E") === (45f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("16000.00E") === (160f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("3940.96N") === (39.68267f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("10503.04W") === (-105.05067f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToDouble("4500.00N") === (45d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("9000.00N") === (90d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("0000.00N") === (0d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("04500.00E") === (45d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("16000.00E") === (160d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("3940.96N") === (39.68267d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("10503.04W") === (-105.05067d +- 0.00001d))
       }
       it("should return positive for South and West positions") {
-        assert(AprsPosition.dddmmmmmToFloat("4500.00S") === (-45f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("9000.00S") === (-90f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("0000.00S") === (0f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("04500.00W") === (-45f +- 0.00001f))
-        assert(AprsPosition.dddmmmmmToFloat("16000.00W") === (-160f +- 0.00001f))
+        assert(AprsPosition.dddmmmmmToDouble("4500.00S") === (-45d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("9000.00S") === (-90d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("0000.00S") === (0d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("04500.00W") === (-45d +- 0.00001d))
+        assert(AprsPosition.dddmmmmmToDouble("16000.00W") === (-160d +- 0.00001d))
       }
       it("should return zero for unknown positions") {
-        assert(AprsPosition.dddmmmmmToFloat("99999.99S") === 0)
-        assert(AprsPosition.dddmmmmmToFloat("N") === 0)
-        assert(AprsPosition.dddmmmmmToFloat("W") === 0)
-        assert(AprsPosition.dddmmmmmToFloat("") === 0)
+        assert(AprsPosition.dddmmmmmToDouble("99999.99S") === 0)
+        assert(AprsPosition.dddmmmmmToDouble("N") === 0)
+        assert(AprsPosition.dddmmmmmToDouble("W") === 0)
+        assert(AprsPosition.dddmmmmmToDouble("") === 0)
       }
     }
   }
@@ -63,8 +63,8 @@ class aprsPositionTest extends FunSpec {
       assert(a.symbol === "_")
       assert(a.table === "/")
       val p = a.position()
-      assert(p._1 === (39.584f +- 0.00001f))
-      assert(p._2 === (-105.171f +- 0.00001f))
+      assert(p._1 === (39.584d +- 0.00001d))
+      assert(p._2 === (-105.171d +- 0.00001d))
     }
 
     it("should be able to digest odd characters in Mic-E") {
@@ -81,8 +81,8 @@ class aprsPositionTest extends FunSpec {
       assert(a.symbol === "B")
       assert(a.table === "/")
       val p = a.position()
-      assert(p._1 === (39.68267f +- 0.00001f))
-      assert(p._2 === (-105.05067f +- 0.00001f))
+      assert(p._1 === (39.68267d +- 0.00001d))
+      assert(p._2 === (-105.05067d +- 0.00001d))
     }
     it("does not recognise 'English' locations.") {
       // K0MTN-10>APWW10,TCPIP*,qAC,T2OSAKA:>DM79koI&DX: KC0D 29.9mi 125° 14:20 3922.20N 10440.76W

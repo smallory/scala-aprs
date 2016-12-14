@@ -41,14 +41,26 @@ object scalaprs {
     loadData(spc.textFile(inFile), dataStore, sqc, sps)
     //-----------------------------------
 
+    // Read the user file for contact info and alert definitions
+    val userFile = settings.getOrElse("users", "users_test.dat")
+    var uu = findUsers( spc.textFile(userFile) )
+
     //-----------------------------------
     // Model / output operational loop
     // After the once-and-done dev testing phase is finished,
     // should migrate to a streaming sink or similar.
-    val userFile = settings.getOrElse("users", "users_test.dat")
+    import sps.implicits._
+    //import sqc.implicits._
+    val dataDF = sps.read.format("json").load(dataStore).as[WxObservation]
+    dataDF.show()
+    dataDF.rdd.map(row => {
+        uu.map(u => {
+          u.addObservation(row)
+          u.checkAlerts().foreach(logInfo)
+        })
+    })
+
     for (i <- List(1)) {
-      // Read the user file for contact info and alert definitions
-      var uu = findUsers( spc.textFile(userFile) )
       // Get an active alert list
       var aa = updateAlerts(dataStore, uu)
       // Do the active alert notification
@@ -93,7 +105,7 @@ object scalaprs {
     //.saveAsObjectFile("sample.wx.dat")
 
     df.as[WxObservation]
-      .write.parquet(store)
+      .write.json(store)
   }
 
   /**

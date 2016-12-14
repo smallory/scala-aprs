@@ -5,18 +5,18 @@ import net.hcoop.smallory.scalaprs.{WxObservation, utc}
 
 class LastTemperature_test extends FunSpec with Matchers {
     val wxa: Array[WxObservation] = Array(
-    WxObservation(0f, 0f,
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:30Z").toInstant.getEpochSecond(),
-      "t", 33f, "farenheit"),
-    WxObservation(0f, 0f,
+      "t", 33d, "farenheit"),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:31Z").toInstant.getEpochSecond(),
-      "t", 35f, "farenheit"),
-    WxObservation(0f, 0f,
+      "t", 35d, "farenheit"),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:32Z").toInstant.getEpochSecond(),
-      "t", 34f, "farenheit"),
-    WxObservation(0f, 0f,
+      "t", 34d, "farenheit"),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:29Z").toInstant.getEpochSecond(),
-      "t", 30f, "farenheit")
+      "t", 30d, "farenheit")
     )
   val tWxaModel = ZonedDateTime.parse("2016-11-20T15:15:32Z")
       .toInstant.getEpochSecond();
@@ -76,26 +76,26 @@ class LastTemperature_test extends FunSpec with Matchers {
     describe("from a simple sequence of 't' WxObservation") {
       it("Find the last temperature, and it's time") {
         val mm = setupWxaModel()
-        assert(mm() === (34f +- 0.001f))
-        assert(mm(tWxaModel - 3) === (34f +- 0.001f))
+        assert(mm() === (34d +- 0.001d))
+        assert(mm(tWxaModel - 3) === (34d +- 0.001d))
       }
       it("Find the minimum temperature, and it's time") {
         val mm = setupWxaModel()
-        assert(mm.min() === (30f +- 0.001f))
+        assert(mm.min() === (30d +- 0.001d))
         assert(mm.minTime === Instant.ofEpochSecond(tWxaModel -3).atZone(utc))
       }
       it("Find the maximum temperature, and it's time") {
         val mm = setupWxaModel()
-        assert(mm.max() === (35f +- 0.001f))
+        assert(mm.max() === (35d +- 0.001d))
         assert(mm.maxTime === Instant.ofEpochSecond(tWxaModel -1).atZone(utc))
       }
       it("Find the last, min, max in degree C") {
         val mm = setupWxaModel()
         mm.unit = "C"
         assert(mm.unit === "C")
-        assert(mm() === (1.1111f +- 0.001f))
-        assert(mm.min() === (-1.1111f +- 0.001f))
-        assert(mm.max() === (1.6666f +- 0.001f))
+        assert(mm() === (1.1111d +- 0.001d))
+        assert(mm.min() === (-1.1111d +- 0.001d))
+        assert(mm.max() === (1.6666d +- 0.001d))
       }
     }
   }

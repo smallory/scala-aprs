@@ -15,18 +15,18 @@ class UserTests extends FunSpec with Matchers {
     "# that was a blank line to ignore"
   )
   val wxa: Array[WxObservation] = Array(
-    WxObservation(39.584f,-105.17f,
+    WxObservation(39.584d,-105.17d,
       ZonedDateTime.parse("2016-11-20T15:14:30Z").toInstant.getEpochSecond(),
-      "t", 36f, "farenheit"),
-    WxObservation(39.584f,-105.17f,
+      "t", 36d, "farenheit"),
+    WxObservation(39.584d,-105.17d,
       ZonedDateTime.parse("2016-11-20T15:15:30Z").toInstant.getEpochSecond(),
-      "t", 34f, "farenheit"),
-    WxObservation(39.584f,-105.17f,
+      "t", 34d, "farenheit"),
+    WxObservation(39.584d,-105.17d,
       ZonedDateTime.parse("2016-11-20T15:16:30Z").toInstant.getEpochSecond(),
-      "t", 32f, "farenheit"),
-    WxObservation(39.584f,-105.17f,
+      "t", 32d, "farenheit"),
+    WxObservation(39.584d,-105.17d,
       ZonedDateTime.parse("2016-11-20T15:17:30Z").toInstant.getEpochSecond(),
-      "t", 30f, "farenheit")
+      "t", 30d, "farenheit")
     )
   val tWxaModel = ZonedDateTime.parse("2016-11-20T15:17:32Z")
       .toInstant.getEpochSecond();
@@ -66,18 +66,18 @@ class UserTests extends FunSpec with Matchers {
         val t1 = User(example(0))
         assert(t1 !== None)
         var usr = t1.get
-        assert(usr.lon === (-105.17f +- 0.001f))
-        assert(usr.lat === (39.584f +- 0.0001f))
+        assert(usr.lon === (-105.17d +- 0.001d))
+        assert(usr.lat === (39.584d +- 0.0001d))
         val t3 = User(example(2))
         assert(t3 !== None)
         usr = t3.get
-        assert(usr.lat === (39.584f +- 0.0001f))
-        assert(usr.lon === (-105.17f +- 0.001f))
+        assert(usr.lat === (39.584d +- 0.0001d))
+        assert(usr.lon === (-105.17d +- 0.001d))
         val t4 = User(example(3))
         assert(t4 !== None)
         usr = t4.get
-        assert(usr.lat === (39.584f +- 0.0001f))
-        assert(usr.lon === (-105.17f +- 0.001f))
+        assert(usr.lat === (39.584d +- 0.0001d))
+        assert(usr.lon === (-105.17d +- 0.001d))
       }
       it("should create an ArrayBuffer of Alerts as named") {
         val t1 = User(example(0))
@@ -146,11 +146,11 @@ class UserTests extends FunSpec with Matchers {
         assert(uu.alerts.size === 1)        
         uu.alerts(0) shouldBe a [TemperatureAlert]
         assert(uu.alerts(0).comparison === "<")
-        assert(uu.alerts(0).limit === (32.0f +- 0.001f))
+        assert(uu.alerts(0).limit === (32.0d +- 0.001d))
 
-        assert(uu.models("temperature")() === (30.0f +- 0.01f))
-        assert(uu.models("temperature").max() === (36.0f +- 0.01f))
-        assert(uu.models("temperature").min() === (30.0f +- 0.01f))
+        assert(uu.models("temperature")() === (30.0d +- 0.01d))
+        assert(uu.models("temperature").max() === (36.0d +- 0.01d))
+        assert(uu.models("temperature").min() === (30.0d +- 0.01d))
 
         val aa = uu.checkAlerts()
         assert(aa.size === 1)

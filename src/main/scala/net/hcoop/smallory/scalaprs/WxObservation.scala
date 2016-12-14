@@ -4,14 +4,12 @@
 
 package net.hcoop.smallory.scalaprs
 
-import java.time.ZonedDateTime
-
 case class WxObservation (
-  lat: Float,
-  lon: Float,
+  lat: Double,
+  lon: Double,
   time: Long, // Second from Epoch
-  feature: String,
-  value: Float,
+  id: String,
+  value: Double,
   unit: String
 )
 
