@@ -15,6 +15,9 @@ class LastTemperature_test extends FunSpec with Matchers {
       ZonedDateTime.parse("2016-11-20T15:15:32Z").toInstant.getEpochSecond(),
       "t", 34d, "farenheit"),
     WxObservation(0d, 0d,
+      ZonedDateTime.parse("2016-11-20T15:15:33Z").toInstant.getEpochSecond(),
+      "h", 77d, "percent"),
+    WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:29Z").toInstant.getEpochSecond(),
       "t", 30d, "farenheit")
     )

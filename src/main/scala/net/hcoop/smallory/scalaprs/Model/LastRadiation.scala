@@ -21,9 +21,9 @@ class LastRadiation (
   val validUnits = our.validUnits
   _unit = "nSv"
   var lastObs: Double = Double.NaN
-  var minObs: Double = Double.MinValue
+  var minObs: Double = Double.MaxValue
   var minObsTime: Long = Long.MinValue
-  var maxObs: Double = Double.MaxValue
+  var maxObs: Double = Double.MinValue
   var maxObsTime: Long = Long.MinValue
   var timeLast: Long = Long.MinValue
 

@@ -5,17 +5,17 @@ import java.time.{ZonedDateTime, Duration, Instant}
 import org.scalatest.{FunSpec, Matchers}
 import net.hcoop.smallory.scalaprs.WxObservation
 
-class LastRadiation_test extends FunSpec with Matchers {
+class GeneralLastValue_test extends FunSpec with Matchers {
   val radLow: Array[WxObservation] = Array(
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:30Z").toInstant.getEpochSecond(),
-      "X", 5d, "nSv"),
+      "h", 5d, "nSv"),
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:31Z").toInstant.getEpochSecond(),
       "X", 3d, "nSv"),
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:32Z").toInstant.getEpochSecond(),
-      "X", 4d, "nSv"),
+      "c", 4d, "nSv"),
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:33Z").toInstant.getEpochSecond(),
       "l", 1999d, "lux"),
@@ -26,13 +26,13 @@ class LastRadiation_test extends FunSpec with Matchers {
   val radHigh: Array[WxObservation] = Array(
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:30Z").toInstant.getEpochSecond(),
-      "X", 500d, ""),
+      "s", 500d, ""),
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:31Z").toInstant.getEpochSecond(),
-      "X", 1400d, ""),
+      "h", 1400d, ""),
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:32Z").toInstant.getEpochSecond(),
-      "X", 2001d, ""),
+      "c", 2001d, ""),
     WxObservation(0d, 0d,
       ZonedDateTime.parse("2016-11-20T15:15:29Z").toInstant.getEpochSecond(),
       "X", 10d, "")
@@ -42,7 +42,7 @@ class LastRadiation_test extends FunSpec with Matchers {
   def setupModel(mod: String): Model = {
     def lat = 45.0f
     def lon = -102.0f
-    val mm = Model(lat, lon, "X", timeModel)
+    val mm = Model(lat, lon, "c", timeModel)
     mod match {
       case "hi" | "high" => radHigh.foreach(obs => mm.addObservation(obs))
       case "lo" | "low" => radLow.foreach(obs => mm.addObservation(obs))
@@ -51,17 +51,17 @@ class LastRadiation_test extends FunSpec with Matchers {
     return mm
   }
   describe("Model") {
-    it("should produce LastRadiation when passed 'X'") {
+    it("should produce GeneralLastValue when passed an otherwise unimplemented ID") {
       val tModel = ZonedDateTime.parse("2016-11-20T15:15:30Z")
               .toInstant.getEpochSecond();
       def lat = 45.0f
       def lon = 102.0f
-      val c = Model(lat, lon, "X", tModel)
+      val c = Model(lat, lon, "h", tModel)
       assert(c.getClass.getName ===
-        "net.hcoop.smallory.scalaprs.models.LastRadiation")
+        "net.hcoop.smallory.scalaprs.models.GeneralLastValue")
     }
   }
-  describe("in LastRadiation") {
+  describe("in GeneralLastValue") {
     it("should filter before and after times correctly") {
       val tModel = ZonedDateTime.parse("2016-11-20T15:15:30Z")
               .toInstant.getEpochSecond();
@@ -73,7 +73,7 @@ class LastRadiation_test extends FunSpec with Matchers {
               .toInstant.getEpochSecond();
       def lat = 45.0f
       def lon = 102.0f
-      val c = Model(lat, lon, "X", tModel)
+      val c = Model(lat, lon, "h", tModel)
       assert(c.timeFilter(tModel) === true)
       assert(c.timeFilter(tBefore) === false)
       assert(c.timeFilter(tDuring) === true)
@@ -88,13 +88,13 @@ class LastRadiation_test extends FunSpec with Matchers {
       def lonNear = -101.9999f
       def latFar = -45.0001f
       def lonFar = -82.0001f
-      val c = Model(lat, lon, "X", tModel)
+      val c = Model(lat, lon, "h", tModel)
       assert(c.distFilter(latNear, lonNear) === true)
       assert(c.distFilter(latFar, lonFar) === false)
       assert(c.distFilter(latNear, lonFar) === false)
       assert(c.distFilter(latFar, lonNear) === false)
     }
-    describe("from a simple sequence of 'X' WxObservation") {
+    describe("from a mixed sequence of WxObservation") {
       it("Find the last radiation obs, and it's time") {
         val mm = setupModel("low")
         assert(mm() === (4d +- 0.001d))
@@ -102,13 +102,13 @@ class LastRadiation_test extends FunSpec with Matchers {
       }
       it("Find the minimum radiation obs, and it's time") {
         val mm = setupModel("low")
-        assert(mm.min() === (3d +- 0.001d))
-        assert(mm.minTime === Instant.ofEpochSecond(timeModel -1).atZone(utc))
+        assert(mm.min() === (4d +- 0.001d))
+        assert(mm.minTime === Instant.ofEpochSecond(timeModel -0).atZone(utc))
       }
       it("Find the maximum radiation obs, and it's time") {
         val mm = setupModel("low")
-        assert(mm.max() === (10d +- 0.001d))
-        assert(mm.maxTime === Instant.ofEpochSecond(timeModel -3).atZone(utc))
+        assert(mm.max() === (4d +- 0.001d))
+        assert(mm.maxTime === Instant.ofEpochSecond(timeModel - 0).atZone(utc))
       }
     }
   }

@@ -28,22 +28,7 @@ class User (
   def checkAlerts(): ArrayBuffer[String] = {
     val ret: ArrayBuffer[String] = ArrayBuffer()
     ret ++= alerts
-      .map( a => {
-        // TODO: make this compatible with min/max guessing Alerts
-        val av = a.value(models)
-        if (av != Double.NaN) a.comparison match {
-          case ">"  | "gt" =>
-            if (av > a.limit) Some(a.message) else None
-          case ">=" | "ge" | "=>" =>
-            if (av >= a.limit) Some(a.message) else None
-          case "="  | "eq" | "==" =>
-            if (av > a.limit) Some(a.message) else None
-          case "<=" | "le" | "=<" =>
-            if (av <= a.limit) Some(a.message) else None
-          case "<"  | "lt" =>
-            if (av < a.limit) Some(a.message) else None
-        } else None
-      })
+      .map( a => a(models))
       .filter(_ != None)
       .map(a => a.get)
     return ret

@@ -11,6 +11,22 @@ trait Alert {
   def message: String // = ""
   def models: Vector[String]
   def value(models: Map[String, Model]): Double
+
+  def apply(models: Map[String, Model]): Option[String] = {
+    val av = value(models)
+    if (av != Double.NaN) comparison match {
+      case ">"  | "gt" =>
+        if (av > limit) Some(message) else None
+      case ">=" | "ge" | "=>" =>
+        if (av >= limit) Some(message) else None
+      case "="  | "eq" | "==" =>
+        if (av > limit) Some(message) else None
+      case "<=" | "le" | "=<" =>
+        if (av <= limit) Some(message) else None
+      case "<"  | "lt" =>
+        if (av < limit) Some(message) else None
+    } else None
+  }
 }
 
 object Alert {

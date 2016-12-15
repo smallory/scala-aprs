@@ -53,6 +53,8 @@ object scalaprs {
     //import sqc.implicits._
     val dataDF = sps.read.format("json").load(dataStore).as[WxObservation]
     dataDF.show()
+    // map over Dataframe generates errors due to lack of "Row" Extractor
+    // so convert to RDD before map. (Spark 2.0 bug)
     dataDF.rdd.map(row => {
         uu.map(u => {
           u.addObservation(row)

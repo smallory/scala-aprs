@@ -90,6 +90,18 @@ class aprsPositionTest extends FunSpec {
       assert(a.lats ===  "0000.00N")
       assert(a.lons === "00000.00W")
     }
+    it("can get lat/lon from a compressed location report") {
+      // "/5L!!<*e7>7P["
+      // Latitude = 49° 30' 00" north
+      // Longitude = 72° 45' 00" west
+      // Speed = 36.2 knots
+      // Course = 88°
+      val a = AprsPosition("""/5L!!<*e7>7P[""")
+      assert(a.latf === (49.5d +- 0.001))
+      assert(a.lonf === (-72.75d +- 0.001))
+      assert(a.lats === "4930.00N")
+      assert(a.lons === "07245.00W")
+    }
       // K0XK>APDR13,TCPIP*,qAC,T2SWEDEN:=3936.47NZ10448.47W@313/000/A=005620 http://aprsdroid.org/
     // K6DHN-9>APT314,WIDE1-1,WIDE2-1,qAR,W0ARP:!3933.39N/10453.34WV115/000/A=005960!wSj!
     // K6DHN-9>APT314,WIDE1-1,WIDE2-1,qAR,W0ARP:>TT3, K6DHN@COMCAST.NET

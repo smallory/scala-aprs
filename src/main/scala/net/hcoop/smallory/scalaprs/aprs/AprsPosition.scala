@@ -61,9 +61,9 @@ class AprsPosition {
     }
     trial = our.compressedLatLonRegex findFirstMatchIn payload
     if (trial != None) {
-      val m  = trial.get // (ta, lar, lor, sm)
-      latf = our.expandLat( m.group(2))
-      lonf = our.expandLon(m.group(3))
+      val m  = trial.get // (time, ta, lar, lor, sm)
+      latf = our.expandLat( m.group(3))
+      lonf = our.expandLon(m.group(4))
       val la = our.stringLat(latf)
       val lo = our.stringLon(lonf)
       val ta = m.group("table") match {
@@ -80,7 +80,7 @@ class AprsPosition {
         case x => x
       }
       setPos(la, lo, ta, m.group("symbol"))
-      timePosLength = m.end
+      timePosLength = m.end - 3 // Course/speed match correction
     }
   }
   def position(): Tuple2[Double, Double] = {
@@ -95,7 +95,7 @@ object AprsPosition {
     """^((?:\d{6}[zh])|)(\d{4}\.\d\d[NS])([\\\/0-9A-Z])(\d{5}\.\d\d[EW])(.)""",
     "date", "lat", "table", "lon", "symbol")
   val compressedLatLonRegex = new Regex( // spec pp. 33-41
-    """^((?:\d{6}[zh])|)([\\\/A-Za-j])([?-{]{4})([?-{]{4})(.)([?-{][?-{])T""",
+    """^((?:\d{6}[zh])|)([\\\/A-Za-j])([!-|]{4})([!-|]{4})(.)([!-\|][!-|])[!-|]""",
     "date", "table", "zlat", "zlon", "symbol", "courseSpeed")
   val parseDegMin = new Regex("""(1?\d{2})([0-6]\d\.\d{2})([NSEWnsew])""", "deg", "min", "hemi")
 

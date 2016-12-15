@@ -30,8 +30,8 @@ object AprsWeather {
     """^([0-9.]{3}|   )/([0-9.]{3}|   )g([0-9.\-]{3}|   )t([0-9.\-]{3}|   )([a-zA-Z0-9\-\. ]*)""",
     "c", "s", "g", "t","more")
   val compressedWxRegex = new Regex(
-    """g([0-9.]{3}|   )t([0-9.-]{3}|   )([a-zA-Z0-9\-\. ]*)""", // possible ending is not matched
-    "g", "t", "more")
+    """([!-|][!-|][!-|])g([0-9.]{3}|   )t([0-9.-]{3}|   )([a-zA-Z0-9\-\. ]*)""", // possible ending is not matched
+    "sc", "g", "t", "more")
   val wx3digitRegex = new Regex("""([a-zA-Z&&[^hblXfF]])([0-9-\.]{3}|   )""", "key", "value")
   val wx4digitRegex = new Regex("""([fF])([0-9-\.]{4}|    )""", "key", "value")
   val wx5digitRegex = new Regex("""([b])([0-9-\.]{5}|     )""", "key", "value")
@@ -51,7 +51,8 @@ object AprsWeather {
     // uncompressed most common, try first
     var wxSearch = wxRegex findFirstMatchIn payload
     if (wxSearch == None) {
-          wxSearch = compressedWxRegex findFirstMatchIn payload
+      wxSearch = compressedWxRegex findFirstMatchIn payload
+      // This will break, since "s" and "c" are not numbers
     }
     if (wxSearch != None) {
       val wxMatch = wxSearch.get
@@ -100,7 +101,9 @@ object AprsWeather {
   val weatherFields = Map(
     ("g", (3, "mph", "peak wind gust")),
     ("c", (3, "degrees", "wind direction")),
-    ("s", (3, "mph", "1-minute sustained wind")),
+    // Speed is mph in "stand alone" reports, but usually from
+    // "7-byte DIR/SPD Data Extension" which provides knots.
+    ("s", (3, "knots", "1-minute sustained wind")),
     ("t", (3, "F", "temperature")),
     ("r", (3, "1/100 inch","rainfall in last hour")),
     ("p", (3, "1/100 inch","rainfall in last 24 hours")),

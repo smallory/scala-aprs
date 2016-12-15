@@ -12,7 +12,8 @@ class UserTests extends FunSpec with Matchers {
     "two@example.com,39.584,-105.17,temperature",
     "three.four@example.com,39.584,-105.17,radiation,temperature < 20",
     "",
-    "# that was a blank line to ignore"
+    "# that was a blank line to ignore",
+    "temps@example.com,39.584,-105.17,temperature > 90,t = 45"
   )
   val wxa: Array[WxObservation] = Array(
     WxObservation(39.584d,-105.17d,
@@ -35,6 +36,13 @@ class UserTests extends FunSpec with Matchers {
     def lon = -105.17f
     // "two@example.com,39.584,-105.17,temperature"
     val uu = User(example(2)).get
+    wxa.foreach(obs => uu.addObservation(obs))
+    return uu
+  }
+  def setupWxaUser6(): User = {
+    def lat = 39.584f
+    def lon = -105.17f
+    val uu = User(example(6)).get
     wxa.foreach(obs => uu.addObservation(obs))
     return uu
   }
@@ -138,7 +146,7 @@ class UserTests extends FunSpec with Matchers {
       }
     }
     describe("when given WxObservations") {
-      it("should load each model") {
+      it("should load a model when given one alert calling for one model") {
         val uu = setupWxaUser()
         assert(uu.models contains "temperature")
         uu.models("temperature") shouldBe a [LastTemperature]
@@ -148,6 +156,7 @@ class UserTests extends FunSpec with Matchers {
         assert(uu.alerts(0).comparison === "<")
         assert(uu.alerts(0).limit === (32.0d +- 0.001d))
 
+        assert(uu.models.size === 1)
         assert(uu.models("temperature")() === (30.0d +- 0.01d))
         assert(uu.models("temperature").max() === (36.0d +- 0.01d))
         assert(uu.models("temperature").min() === (30.0d +- 0.01d))
@@ -155,6 +164,28 @@ class UserTests extends FunSpec with Matchers {
         val aa = uu.checkAlerts()
         assert(aa.size === 1)
         assert(aa(0) === "Freezing temperature rather likely.")
+      }
+      it("should load a model when given two alerts calling for same model") {
+        val uu = setupWxaUser6()
+        assert(uu.models contains "temperature")
+        assert(uu.models.size === 1)
+        uu.models("temperature") shouldBe a [LastTemperature]
+
+        assert(uu.alerts.size === 2)
+        uu.alerts(0) shouldBe a [TemperatureAlert]
+        assert(uu.alerts(0).comparison === ">")
+        assert(uu.alerts(0).limit === (90.0d +- 0.001d))
+
+        uu.alerts(1) shouldBe a [TemperatureAlert]
+        assert(uu.alerts(1).comparison === "=")
+        assert(uu.alerts(1).limit === (45.0d +- 0.001d))
+
+        assert(uu.models("temperature")() === (30.0d +- 0.01d))
+        assert(uu.models("temperature").max() === (36.0d +- 0.01d))
+        assert(uu.models("temperature").min() === (30.0d +- 0.01d))
+
+        val aa = uu.checkAlerts()
+        assert(aa.size === 0)
       }
     }
   }

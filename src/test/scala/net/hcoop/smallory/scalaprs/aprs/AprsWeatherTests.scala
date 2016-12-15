@@ -27,15 +27,16 @@ class aprsWeatherTest extends FunSpec {
         assert(wx2.wx("t") === 34)
       }
       ignore("should load base wx data from compressed weather messages") {
-        // This is not a compressed example!
-        val wx = AprsWeather("150/005g008t026r000p000P000b10276h78L341.WD 31")
+        // Speed = 36.2 knots
+        // Course = 88°
+        val wx = AprsWeather("7P[g008t026r000p000P000b10276h78L341.WD 31")
         assert(wx.wx != null)
         assert(wx.wx.contains("c"))
         assert(wx.wx.contains("s"))
         assert(wx.wx.contains("g"))
         assert(wx.wx.contains("t"))
-        assert(wx.get("c").get === 150)
-        assert(wx.get("s").get === 5)
+        assert(wx.get("c").get === 88)
+        assert(wx.get("s").get === (36.2d +- 0.1d))
         assert(wx.get("g").get === 8)
         assert(wx.get("t").get === 26)
       }
