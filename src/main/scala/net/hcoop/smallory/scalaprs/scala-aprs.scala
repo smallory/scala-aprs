@@ -19,13 +19,12 @@ import scala.collection.mutable.{Map, ArrayBuffer}
 
 object scalaprs {
   def main(args: Array[String]) {
-    val spc = new SparkContext()
     val sps = SparkSession
       .builder()
       .appName("scala-aprs")
-      .config(spc.getConf)
       .getOrCreate()
-    val sqc = new org.apache.spark.sql.SQLContext(spc)
+    val spc = sps.sparkContext
+    val sqc = sps.sqlContext
 
     //-----------------------------------
     // Get the configuartion/settings map
