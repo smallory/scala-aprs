@@ -48,7 +48,7 @@ object User {
       case None => {}
     }
     var tokens: Array[String] = defn.split(",")
-    if (tokens.length < 3) return None
+    if (tokens.length <= 3) return None
 
     val ll = new User(
       user = tokens(0),

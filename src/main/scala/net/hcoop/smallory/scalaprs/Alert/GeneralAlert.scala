@@ -18,9 +18,10 @@ class GeneralAlert (valueId: String) extends Alert with Serializable {
 
   override def value(models: Map[String, Model]): Double = {
     comparison match {
-      case "<" | "<=" | "le" | "lt" => return models(valueId).min()
-      case ">" | ">=" | "ge" | "gt" => return models(valueId).max()
-      case "=" | "eq"   => return models(valueId)(ZonedDateTime.now(utc))
+      case "<" | "<=" | "=<" | "le" | "lt" => return models(valueId).min()
+      case ">" | ">=" | "=>" | "ge" | "gt" => return models(valueId).max()
+      case "=" | "==" | "!=" | "<>" | "eq" | "ne" =>
+        return models(valueId)(ZonedDateTime.now(utc))
     }
   }
   def updateMessage() = message = s"Field $valueId $comparison $limit."

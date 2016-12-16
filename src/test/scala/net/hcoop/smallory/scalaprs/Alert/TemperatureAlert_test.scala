@@ -35,6 +35,20 @@ class TemperatureAlert_test extends FunSpec with Matchers {
         assert(ra.comparison === ">")
         assert(ra.value(models) === (70d +- 0.01d))
       }
+      it("should allow temperature test changes without operator") {
+        val time = ZonedDateTime.parse("2016-11-20T15:15:30Z[UTC]")
+          .toInstant.getEpochSecond();
+        def lat = 45.0d
+        def lon = -102.0d
+        val models: Map[String, Model] = Map(
+          ("temperature" -> StubModel(time, lat, lon, 20, 70, 33))
+        )
+        val ra = Alert("temperature 36")
+        assert(ra.limit === (36d +- 0.01d))
+        assert(ra.comparison === "<")
+        assert(ra.value(models) === (20d +- 0.01d))
+      }
+
     }
   }
 }

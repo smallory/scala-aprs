@@ -17,7 +17,7 @@ class AprsDate {
 
   def toLong(): Long = {
     if (zdt == None) {
-      val x = this.asDate()
+      val x = this.toDate()
       if (x == null) return 0l
     }
     zdt.get.toInstant.getEpochSecond()
@@ -27,7 +27,7 @@ class AprsDate {
     return theDate
   }
 
-  def asDate(): ZonedDateTime = {
+  def toDate(): ZonedDateTime = {
     val fmt = DateTimeFormatter.ofPattern("yyyy MMM dd, kk:mm").withZone(utc)
     zdt match {
       case z: Some[ZonedDateTime] => return z.get
@@ -37,6 +37,7 @@ class AprsDate {
           return zdt.get
         } catch {
           case e: DateTimeParseException => return null
+          case e: java.lang.NullPointerException => return null
         }
     }
     return null
@@ -67,7 +68,12 @@ object AprsDate {
             val fixedTimeRegex(d, h, m, s) = tt
             return s"$year $month $day $h:$m"
           }
-          case None => return  s"$year $month $day, $hour:$minute"
+          case None =>
+            if (
+              List(year, month, day, hour, minute)
+              .filter(x => x == null).size == 0 )
+              return  s"$year $month $day, $hour:$minute"
+            else return null
           }
         }
     }

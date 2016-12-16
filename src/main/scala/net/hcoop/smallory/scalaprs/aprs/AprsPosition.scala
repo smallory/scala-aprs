@@ -140,22 +140,13 @@ object AprsPosition {
     return if (llc.size < 1) 0d else (90.0 - (base91decode(llc)/380926.0)).toDouble
   }
 
-  def doubleLL(lons: String): Double = {
-    val i = lons.length - 1
-    val hemi = lons drop i take 1
-    val deg = (lons take 2).toInt + ((lons drop 2 take i-2).toDouble / 60)
-    if (hemi == "N" || hemi == "E") return deg
-    else if (hemi == "W" || hemi == "S") return -deg
-    else return 0.0d
-  }
-
   def stringLon(doubleLon: Double): String = {
     var h = "E"
     var l: Double = 0.0
     if (doubleLon < 0) {h = "W"; l = -doubleLon}; else l = doubleLon;
     val ld = l.toInt
     val lmin = (l - ld) * 60
-    return f"$ld%03d$lmin%02.2f$h%s"
+    return f"$ld%03d$lmin%05.2f$h%s"
   }
 
   def stringLat(doubleLat: Double): String = {
@@ -164,7 +155,7 @@ object AprsPosition {
     if (doubleLat < 0) {h = "S"; l = -doubleLat}; else l = doubleLat;
     val ld = l.toInt
     val lmin = (l - ld) * 60
-    return f"$ld%02d$lmin%02.2f$h%s"
+    return f"$ld%02d$lmin%05.2f$h%s"
   }
 
 }

@@ -22,6 +22,24 @@ class aprsPositionTest extends FunSpec {
         assert(AprsPosition.expandLat("5L!!") === (49.5d +- .0001d))
       }
     }
+    describe("methods stringLat and stringLon") {
+      it("should convert Northern latitude correctly") {
+        assert(AprsPosition.stringLat(90d) === "9000.00N")
+        assert(AprsPosition.stringLat(45.4444444d) === "4526.67N")
+      }
+      it("should convert Southern latitude correctly") {
+        assert(AprsPosition.stringLat(-90d) === "9000.00S")
+        assert(AprsPosition.stringLat(-45.4444444d) === "4526.67S")
+      }
+      it("should convert Western latitude correctly") {
+        assert(AprsPosition.stringLon(-90d) === "09000.00W")
+        assert(AprsPosition.stringLon(-45.4444444d) === "04526.67W")
+      }
+      it("should convert Eastern latitude correctly") {
+        assert(AprsPosition.stringLon(180d) === "18000.00E")
+        assert(AprsPosition.stringLon(45.4444444d) === "04526.67E")
+      }
+    }
     describe("AprsPosition.dddmmmmmToDouble") {
       it("should return positive for North and East positions") {
         assert(AprsPosition.dddmmmmmToDouble("4500.00N") === (45d +- 0.00001d))
@@ -66,6 +84,17 @@ class aprsPositionTest extends FunSpec {
       assert(p._1 === (39.584d +- 0.00001d))
       assert(p._2 === (-105.171d +- 0.00001d))
     }
+    it("should get signs right for E and S hemispheres, and find overlay values") {
+      // N0LNE>APRS,TCPIP*,qAC,FIFTH:@221420z3935.04N/10510.26W_028/008g013t036r000p003P003b10110h78.WD 233
+      val a = AprsPosition("221420z3935.04S110510.26E_028/008g013t036r000p003P003b10110h78.WD 233")
+      assert(a.lats === "3935.04S")
+      assert(a.lons === "10510.26E")
+      assert(a.symbol === "_")
+      assert(a.table === "1")
+      val p = a.position()
+      assert(p._1 === (-39.584d +- 0.00001d))
+      assert(p._2 === (105.171d +- 0.00001d))
+    }
 
     it("should be able to digest odd characters in Mic-E") {
       // K0LAI-9>SY4PTR,WIDE1-1,WIDE2-1,qAR,W0ARP:`qal v/]\"GV}449.350MHzÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿÿ=
@@ -101,6 +130,35 @@ class aprsPositionTest extends FunSpec {
       assert(a.lonf === (-72.75d +- 0.001))
       assert(a.lats === "4930.00N")
       assert(a.lons === "07245.00W")
+    }
+    it("can get correct symbols and overlays from a compressed location report") {
+      // "/5L!!<*e7>7P["
+      // Latitude = 49° 30' 00" north
+      // Longitude = 72° 45' 00" west
+      // Speed = 36.2 knots
+      // Course = 88°
+      var a = AprsPosition("""/5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W />")
+       a = AprsPosition("""a5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 0>")
+       a = AprsPosition("""b5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 1>")
+       a = AprsPosition("""c5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 2>")
+       a = AprsPosition("""d5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 3>")
+       a = AprsPosition("""e5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 4>")
+       a = AprsPosition("""f5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 5>")
+       a = AprsPosition("""g5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 6>")
+       a = AprsPosition("""h5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 7>")
+       a = AprsPosition("""i5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 8>")
+       a = AprsPosition("""j5L!!<*e7>7P[""")
+      assert(a.toString === "4930.00N,07245.00W 9>")
     }
       // K0XK>APDR13,TCPIP*,qAC,T2SWEDEN:=3936.47NZ10448.47W@313/000/A=005620 http://aprsdroid.org/
     // K6DHN-9>APT314,WIDE1-1,WIDE2-1,qAR,W0ARP:!3933.39N/10453.34WV115/000/A=005960!wSj!

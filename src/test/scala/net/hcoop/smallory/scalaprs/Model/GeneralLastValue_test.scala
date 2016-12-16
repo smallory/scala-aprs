@@ -95,20 +95,26 @@ class GeneralLastValue_test extends FunSpec with Matchers {
       assert(c.distFilter(latFar, lonNear) === false)
     }
     describe("from a mixed sequence of WxObservation") {
-      it("Find the last radiation obs, and it's time") {
+      it("Find the last observation, and it's time") {
         val mm = setupModel("low")
         assert(mm() === (4d +- 0.001d))
         assert(mm(timeModel - 3) === (4d +- 0.001d))
       }
-      it("Find the minimum radiation obs, and it's time") {
+      it("Find the minimum observed, and it's time") {
         val mm = setupModel("low")
         assert(mm.min() === (4d +- 0.001d))
         assert(mm.minTime === Instant.ofEpochSecond(timeModel -0).atZone(utc))
       }
-      it("Find the maximum radiation obs, and it's time") {
+      it("Find the maximum observed, and it's time") {
         val mm = setupModel("low")
         assert(mm.max() === (4d +- 0.001d))
         assert(mm.maxTime === Instant.ofEpochSecond(timeModel - 0).atZone(utc))
+      }
+      it("Return appropriate units, but not act on changes to them") {
+        val mm = setupModel("low")
+        assert(mm.unit === "degrees") // "c" is a direction
+        mm.unit = "radians"
+        assert(mm.unit === "degrees")
       }
     }
   }

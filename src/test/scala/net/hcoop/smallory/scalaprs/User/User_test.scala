@@ -13,7 +13,9 @@ class UserTests extends FunSpec with Matchers {
     "three.four@example.com,39.584,-105.17,radiation,temperature < 20",
     "",
     "# that was a blank line to ignore",
-    "temps@example.com,39.584,-105.17,temperature > 90,t = 45"
+    "temps@example.com,39.584,-105.17,temperature > 90,t = 45",
+    "void@example.com,39.584,-105.17",
+    "pointless@example.com,"
   )
   val wxa: Array[WxObservation] = Array(
     WxObservation(39.584d,-105.17d,
@@ -55,6 +57,12 @@ class UserTests extends FunSpec with Matchers {
         assert(t5 === None)
         val t6 = User(example(5))
         assert(t6 === None)
+      }
+      it("should return None when there are no alerts") {
+        val t2 = User(example(7))
+        assert(t2 === None)
+        val t5 = User(example(8))
+        assert(t5 === None)
       }
       it("should use the email as user identifier") {
         val t1 = User(example(0))

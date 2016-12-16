@@ -13,6 +13,7 @@ trait Alert {
   def value(models: Map[String, Model]): Double
 
   def apply(models: Map[String, Model]): Option[String] = {
+    val epsilon = 0.00001d
     val av = value(models)
     if (av != Double.NaN) comparison match {
       case ">"  | "gt" =>
@@ -20,7 +21,10 @@ trait Alert {
       case ">=" | "ge" | "=>" =>
         if (av >= limit) Some(message) else None
       case "="  | "eq" | "==" =>
-        if (av > limit) Some(message) else None
+        if (limit + epsilon > av && av > limit - epsilon)
+          Some(message) else None
+      case "!=" | "ne" | "<>" =>
+        if (av != limit) Some(message) else None
       case "<=" | "le" | "=<" =>
         if (av <= limit) Some(message) else None
       case "<"  | "lt" =>
